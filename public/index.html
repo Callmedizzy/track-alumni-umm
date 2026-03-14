@@ -10,86 +10,126 @@
   <header class="app-header">
     <div class="brand">
       <img class="logo-img" src="logo-umm.png" alt="Logo UMM" />
-      <div>
-        <h1>Sistem Pelacakan Alumni</h1>
-      </div>
+      <h1>Sistem Pelacakan Alumni</h1>
     </div>
   </header>
 
-  <main class="container">
-    <section class="card">
-      <h2>Tambah Data Alumni</h2>
-      <form id="alumniForm" class="form-grid">
-        <div class="field">
-          <label for="name">Nama</label>
-          <input type="text" id="name" name="name" placeholder="Contoh: Rina Putri" required />
+  <div class="app-shell">
+    <aside class="sidebar">
+      <h2 class="sidebar-title">Menu</h2>
+      <nav class="sidebar-nav">
+        <a class="nav-item active" href="#dashboard">Dashboard</a>
+        <a class="nav-item" href="#data-alumni">Data Alumni</a>
+        <a class="nav-item" href="#tambah-alumni">Tambah Alumni</a>
+        <a class="nav-item" href="#laporan">Laporan</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <section id="dashboard" class="stats-grid">
+        <div class="stat-card">
+          <p>Total Alumni</p>
+          <h3 id="totalCount">0</h3>
+        </div>
+        <div class="stat-card">
+          <p>Alumni Teridentifikasi</p>
+          <h3 id="identifiedCount">0</h3>
+        </div>
+        <div class="stat-card">
+          <p>Perlu Verifikasi</p>
+          <h3 id="verifyCount">0</h3>
+        </div>
+        <div class="stat-card">
+          <p>Belum Dilacak</p>
+          <h3 id="untrackedCount">0</h3>
+        </div>
+      </section>
+
+      <section id="tambah-alumni" class="card">
+        <h2>Tambah Data Alumni</h2>
+        <form id="alumniForm" class="form-grid">
+          <div class="field">
+            <label for="name">Nama</label>
+            <input type="text" id="name" name="name" placeholder="Contoh: Rina Putri" required />
+          </div>
+
+          <div class="field">
+            <label for="program">Program Studi</label>
+            <input type="text" id="program" name="program" placeholder="Contoh: Teknik Informatika" required />
+          </div>
+
+          <div class="field">
+            <label for="graduationYear">Tahun Lulus</label>
+            <input type="text" id="graduationYear" name="graduationYear" placeholder="Contoh: 2023" required />
+          </div>
+
+          <div class="field">
+            <label for="job">Pekerjaan Saat Ini</label>
+            <input type="text" id="job" name="job" placeholder="Contoh: Software Engineer" required />
+          </div>
+
+          <div class="field">
+            <label for="company">Perusahaan</label>
+            <input type="text" id="company" name="company" placeholder="Contoh: PT Teknologi Maju" required />
+          </div>
+
+          <div class="field">
+            <label for="location">Lokasi</label>
+            <input type="text" id="location" name="location" placeholder="Contoh: Jakarta" required />
+          </div>
+
+          <div class="field">
+            <label for="status">Status Pelacakan</label>
+            <select id="status" name="status" required>
+              <option value="Teridentifikasi">Teridentifikasi</option>
+              <option value="Perlu Verifikasi">Perlu Verifikasi</option>
+              <option value="Belum Dilacak" selected>Belum Dilacak</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn primary">Simpan Data</button>
+        </form>
+
+        <p id="statusMessage" class="status">Siap menerima input data.</p>
+      </section>
+
+      <section id="data-alumni" class="card">
+        <h2>Daftar Alumni</h2>
+
+        <div class="search-bar">
+          <input type="text" id="searchName" placeholder="Cari berdasarkan nama" />
+          <button id="searchBtn" class="btn">Cari</button>
+          <button id="resetBtn" class="btn ghost">Tampilkan Semua</button>
         </div>
 
-        <div class="field">
-          <label for="program">Program Studi</label>
-          <input type="text" id="program" name="program" placeholder="Contoh: Teknik Informatika" required />
+        <div class="table-wrapper">
+          <table id="alumniTable">
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Program Studi</th>
+                <th>Tahun Lulus</th>
+                <th>Pekerjaan</th>
+                <th>Perusahaan</th>
+                <th>Lokasi</th>
+                <th>Status Pelacakan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="8" class="empty">Belum ada data alumni.</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </section>
+    </main>
+  </div>
 
-        <div class="field">
-          <label for="graduationYear">Tahun Lulus</label>
-          <input type="text" id="graduationYear" name="graduationYear" placeholder="Contoh: 2023" required />
-        </div>
-
-        <div class="field">
-          <label for="job">Pekerjaan Saat Ini</label>
-          <input type="text" id="job" name="job" placeholder="Contoh: Software Engineer" required />
-        </div>
-
-        <div class="field">
-          <label for="company">Perusahaan</label>
-          <input type="text" id="company" name="company" placeholder="Contoh: PT Teknologi Maju" required />
-        </div>
-
-        <div class="field">
-          <label for="location">Lokasi</label>
-          <input type="text" id="location" name="location" placeholder="Contoh: Jakarta" required />
-        </div>
-
-        <button type="submit" class="btn primary">Simpan Data</button>
-      </form>
-
-      <p id="status" class="status">Siap menerima input data.</p>
-    </section>
-
-    <section class="card">
-      <h2>Daftar Alumni</h2>
-
-      <div class="search-bar">
-        <input type="text" id="searchName" placeholder="Cari berdasarkan nama" />
-        <button id="searchBtn" class="btn">Cari</button>
-        <button id="resetBtn" class="btn ghost">Tampilkan Semua</button>
-      </div>
-
-      <div class="table-wrapper">
-        <table id="alumniTable">
-          <thead>
-            <tr>
-              <th>Nama</th>
-              <th>Program Studi</th>
-              <th>Tahun Lulus</th>
-              <th>Pekerjaan</th>
-              <th>Perusahaan</th>
-              <th>Lokasi</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colspan="7" class="empty">Belum ada data alumni.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <footer class="app-footer"></footer>
+  <footer id="laporan" class="app-footer"></footer>
 
   <script src="script.js"></script>
 </body>
 </html>
+

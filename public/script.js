@@ -3,11 +3,60 @@ const tableBody = document.querySelector("#alumniTable tbody");
 const searchInput = document.getElementById("searchName");
 const searchBtn = document.getElementById("searchBtn");
 const resetBtn = document.getElementById("resetBtn");
-const statusEl = document.getElementById("status");
+const statusEl = document.getElementById("statusMessage");
 const submitBtn = form.querySelector("button[type='submit']");
+const statusSelect = document.getElementById("status");
+const totalCountEl = document.getElementById("totalCount");
+const identifiedCountEl = document.getElementById("identifiedCount");
+const verifyCountEl = document.getElementById("verifyCount");
+const untrackedCountEl = document.getElementById("untrackedCount");
+
+const STATUS_STORAGE_KEY = "alumniStatusMap";
 
 let editingId = null;
 let lastData = [];
+let statusMap = loadStatusMap();
+
+function loadStatusMap() {
+  try {
+    const raw = localStorage.getItem(STATUS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function saveStatusMap() {
+  localStorage.setItem(STATUS_STORAGE_KEY, JSON.stringify(statusMap));
+}
+
+function normalizeStatus(status) {
+  if (!status) return "Belum Dilacak";
+  if (status === "Teridentifikasi") return "Teridentifikasi";
+  if (status === "Perlu Verifikasi") return "Perlu Verifikasi";
+  if (status === "Belum Dilacak") return "Belum Dilacak";
+  return "Belum Dilacak";
+}
+
+function getStatusFor(item) {
+  return normalizeStatus(item.status || statusMap[item.id]);
+}
+
+function setStatusForId(id, status) {
+  statusMap[id] = normalizeStatus(status);
+  saveStatusMap();
+}
+
+function removeStatusForId(id) {
+  delete statusMap[id];
+  saveStatusMap();
+}
+
+function getStatusClass(status) {
+  if (status === "Teridentifikasi") return "status-identified";
+  if (status === "Perlu Verifikasi") return "status-verify";
+  return "status-untracked";
+}
 
 function setStatus(message, type = "") {
   statusEl.textContent = message;
@@ -34,9 +83,29 @@ function validateGraduationYear(yearValue) {
   return "";
 }
 
+function updateStats(data) {
+  const total = data.length;
+  let identified = 0;
+  let verify = 0;
+  let untracked = 0;
+
+  data.forEach((item) => {
+    const status = normalizeStatus(item.status);
+    if (status === "Teridentifikasi") identified += 1;
+    else if (status === "Perlu Verifikasi") verify += 1;
+    else untracked += 1;
+  });
+
+  totalCountEl.textContent = total;
+  identifiedCountEl.textContent = identified;
+  verifyCountEl.textContent = verify;
+  untrackedCountEl.textContent = untracked;
+}
+
 function resetFormMode() {
   editingId = null;
   submitBtn.textContent = "Simpan Data";
+  statusSelect.value = "Belum Dilacak";
 }
 
 function setEditMode(alumni) {
@@ -47,23 +116,33 @@ function setEditMode(alumni) {
   form.job.value = alumni.job;
   form.company.value = alumni.company;
   form.location.value = alumni.location;
+  statusSelect.value = normalizeStatus(alumni.status);
   submitBtn.textContent = "Perbarui Data";
   setStatus("Mode edit: perbarui data lalu simpan.");
   form.name.focus();
 }
 
 function renderTable(data) {
-  lastData = Array.isArray(data) ? data : [];
+  const enriched = Array.isArray(data)
+    ? data.map((item) => ({
+        ...item,
+        status: getStatusFor(item)
+      }))
+    : [];
+
+  lastData = enriched;
   tableBody.innerHTML = "";
 
   if (!lastData.length) {
     const row = document.createElement("tr");
-    row.innerHTML = '<td colspan="7" class="empty">Data tidak ditemukan.</td>';
+    row.innerHTML = '<td colspan="8" class="empty">Data tidak ditemukan.</td>';
     tableBody.appendChild(row);
+    updateStats([]);
     return;
   }
 
   lastData.forEach((item) => {
+    const statusClass = getStatusClass(item.status);
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${item.name}</td>
@@ -72,6 +151,7 @@ function renderTable(data) {
       <td>${item.job}</td>
       <td>${item.company}</td>
       <td>${item.location}</td>
+      <td><span class="status-pill ${statusClass}">${item.status}</span></td>
       <td>
         <button class="btn ghost" data-action="edit" data-id="${item.id}">Edit</button>
         <button class="btn danger" data-action="delete" data-id="${item.id}">Hapus</button>
@@ -79,6 +159,8 @@ function renderTable(data) {
     `;
     tableBody.appendChild(row);
   });
+
+  updateStats(lastData);
 }
 
 async function fetchAlumni(url = "/alumni") {
@@ -100,12 +182,18 @@ form.addEventListener("submit", async (event) => {
     graduationYear: form.graduationYear.value.trim(),
     job: form.job.value.trim(),
     company: form.company.value.trim(),
-    location: form.location.value.trim()
+    location: form.location.value.trim(),
+    status: statusSelect.value
   };
 
   const yearError = validateGraduationYear(payload.graduationYear);
   if (yearError) {
     setStatus(yearError, "error");
+    return;
+  }
+
+  if (!payload.status) {
+    setStatus("Status pelacakan wajib diisi.", "error");
     return;
   }
 
@@ -121,10 +209,21 @@ form.addEventListener("submit", async (event) => {
       body: JSON.stringify(payload)
     });
 
+    let result = null;
+    try {
+      result = await response.json();
+    } catch (error) {
+      result = null;
+    }
+
     if (!response.ok) {
-      const errorData = await response.json();
-      setStatus(errorData.message || "Gagal menyimpan data.", "error");
+      setStatus(result?.message || "Gagal menyimpan data.", "error");
       return;
+    }
+
+    const savedId = result?.id ?? editingId;
+    if (savedId) {
+      setStatusForId(savedId, payload.status);
     }
 
     setStatus(editingId ? "Data alumni berhasil diperbarui." : "Data alumni berhasil disimpan.", "success");
@@ -176,6 +275,7 @@ tableBody.addEventListener("click", async (event) => {
         return;
       }
 
+      removeStatusForId(id);
       setStatus("Data alumni berhasil dihapus.", "success");
       fetchAlumni();
     } catch (error) {
@@ -186,3 +286,6 @@ tableBody.addEventListener("click", async (event) => {
 
 // Initial load
 fetchAlumni();
+resetFormMode();
+
+
