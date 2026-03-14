@@ -4,14 +4,23 @@ const searchInput = document.getElementById("searchName");
 const searchBtn = document.getElementById("searchBtn");
 const resetBtn = document.getElementById("resetBtn");
 const statusEl = document.getElementById("statusMessage");
-const submitBtn = form.querySelector("button[type='submit']");
+const submitBtn = document.getElementById("submitBtn");
 const statusSelect = document.getElementById("status");
 const totalCountEl = document.getElementById("totalCount");
 const identifiedCountEl = document.getElementById("identifiedCount");
 const verifyCountEl = document.getElementById("verifyCount");
 const untrackedCountEl = document.getElementById("untrackedCount");
+const authButton = document.getElementById("authButton");
+const loginModal = document.getElementById("loginModal");
+const loginForm = document.getElementById("loginForm");
+const loginError = document.getElementById("loginError");
+const cancelLogin = document.getElementById("cancelLogin");
+const loginHint = document.getElementById("loginHint");
 
 const STATUS_STORAGE_KEY = "alumniStatusMap";
+const ADMIN_STORAGE_KEY = "adminLogin";
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin123";
 
 let editingId = null;
 let lastData = [];
@@ -102,6 +111,45 @@ function updateStats(data) {
   untrackedCountEl.textContent = untracked;
 }
 
+function isAdmin() {
+  return localStorage.getItem(ADMIN_STORAGE_KEY) === "true";
+}
+
+function setAdmin(value) {
+  if (value) {
+    localStorage.setItem(ADMIN_STORAGE_KEY, "true");
+  } else {
+    localStorage.removeItem(ADMIN_STORAGE_KEY);
+  }
+}
+
+function showLoginModal() {
+  loginError.classList.add("hidden");
+  loginForm.reset();
+  loginModal.classList.remove("hidden");
+}
+
+function hideLoginModal() {
+  loginModal.classList.add("hidden");
+}
+
+function updateAuthUI() {
+  const admin = isAdmin();
+  authButton.textContent = admin ? "Logout Admin" : "Login Admin";
+  loginHint.classList.toggle("hidden", admin);
+  submitBtn.classList.toggle("hidden", !admin);
+
+  form.querySelectorAll("input, select").forEach((input) => {
+    input.disabled = !admin;
+  });
+
+  if (!admin) {
+    resetFormMode();
+  }
+
+  renderTable(lastData);
+}
+
 function resetFormMode() {
   editingId = null;
   submitBtn.textContent = "Simpan Data";
@@ -109,6 +157,11 @@ function resetFormMode() {
 }
 
 function setEditMode(alumni) {
+  if (!isAdmin()) {
+    setStatus("Silakan login sebagai admin untuk mengubah data alumni.", "warning");
+    return;
+  }
+
   editingId = alumni.id;
   form.name.value = alumni.name;
   form.program.value = alumni.program;
@@ -141,8 +194,15 @@ function renderTable(data) {
     return;
   }
 
+  const admin = isAdmin();
+
   lastData.forEach((item) => {
     const statusClass = getStatusClass(item.status);
+    const actions = admin
+      ? `<button class="btn ghost" data-action="edit" data-id="${item.id}">Edit</button>
+         <button class="btn danger" data-action="delete" data-id="${item.id}">Hapus</button>`
+      : `<span class="muted">-</span>`;
+
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${item.name}</td>
@@ -152,10 +212,7 @@ function renderTable(data) {
       <td>${item.company}</td>
       <td>${item.location}</td>
       <td><span class="status-pill ${statusClass}">${item.status}</span></td>
-      <td>
-        <button class="btn ghost" data-action="edit" data-id="${item.id}">Edit</button>
-        <button class="btn danger" data-action="delete" data-id="${item.id}">Hapus</button>
-      </td>
+      <td>${actions}</td>
     `;
     tableBody.appendChild(row);
   });
@@ -175,6 +232,11 @@ async function fetchAlumni(url = "/alumni") {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (!isAdmin()) {
+    setStatus("Silakan login sebagai admin untuk mengubah data alumni.", "warning");
+    return;
+  }
 
   const payload = {
     name: form.name.value.trim(),
@@ -246,6 +308,42 @@ resetBtn.addEventListener("click", () => {
   fetchAlumni();
 });
 
+authButton.addEventListener("click", () => {
+  if (isAdmin()) {
+    setAdmin(false);
+    setStatus("Logout berhasil.", "success");
+    updateAuthUI();
+    return;
+  }
+
+  showLoginModal();
+});
+
+cancelLogin.addEventListener("click", () => {
+  hideLoginModal();
+});
+
+loginModal.addEventListener("click", (event) => {
+  if (event.target === loginModal) {
+    hideLoginModal();
+  }
+});
+
+loginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const username = loginForm.username.value.trim();
+  const password = loginForm.password.value;
+
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    setAdmin(true);
+    hideLoginModal();
+    setStatus("Login admin berhasil.", "success");
+    updateAuthUI();
+  } else {
+    loginError.classList.remove("hidden");
+  }
+});
+
 // Event delegation for edit/delete button
 tableBody.addEventListener("click", async (event) => {
   const target = event.target;
@@ -254,6 +352,11 @@ tableBody.addEventListener("click", async (event) => {
   const action = target.getAttribute("data-action");
   const id = target.getAttribute("data-id");
   if (!action || !id) return;
+
+  if (!isAdmin()) {
+    setStatus("Silakan login sebagai admin untuk mengubah data alumni.", "warning");
+    return;
+  }
 
   if (action === "edit") {
     const alumni = lastData.find((item) => String(item.id) === String(id));
@@ -286,6 +389,5 @@ tableBody.addEventListener("click", async (event) => {
 
 // Initial load
 fetchAlumni();
+updateAuthUI();
 resetFormMode();
-
-

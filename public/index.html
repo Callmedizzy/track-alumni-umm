@@ -23,6 +23,9 @@
         <a class="nav-item" href="#tambah-alumni">Tambah Alumni</a>
         <a class="nav-item" href="#laporan">Laporan</a>
       </nav>
+      <div class="sidebar-actions">
+        <button id="authButton" class="btn ghost" type="button">Login Admin</button>
+      </div>
     </aside>
 
     <main class="main-content">
@@ -47,6 +50,7 @@
 
       <section id="tambah-alumni" class="card">
         <h2>Tambah Data Alumni</h2>
+        <p id="loginHint" class="status warning">Silakan login sebagai admin untuk mengubah data alumni.</p>
         <form id="alumniForm" class="form-grid">
           <div class="field">
             <label for="name">Nama</label>
@@ -87,7 +91,7 @@
             </select>
           </div>
 
-          <button type="submit" class="btn primary">Simpan Data</button>
+          <button type="submit" class="btn primary" id="submitBtn">Simpan Data</button>
         </form>
 
         <p id="statusMessage" class="status">Siap menerima input data.</p>
@@ -129,7 +133,28 @@
 
   <footer id="laporan" class="app-footer"></footer>
 
+  <div id="loginModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="modal-content">
+      <h2 id="loginTitle">Login Admin</h2>
+      <p class="modal-subtitle">Masuk untuk mengelola data alumni.</p>
+      <form id="loginForm" class="modal-form">
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="off" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <p id="loginError" class="status error hidden">Username atau password salah.</p>
+        <div class="modal-actions">
+          <button type="button" id="cancelLogin" class="btn ghost">Batal</button>
+          <button type="submit" class="btn primary">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
-

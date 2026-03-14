@@ -104,6 +104,12 @@ body {
   color: var(--accent);
 }
 
+.sidebar-actions {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
 .main-content {
   display: grid;
   gap: 24px;
@@ -233,6 +239,10 @@ input::placeholder {
   color: var(--danger);
 }
 
+.status.warning {
+  color: var(--warning);
+}
+
 .search-bar {
   display: flex;
   flex-wrap: wrap;
@@ -301,6 +311,52 @@ input::placeholder {
 
 .empty {
   text-align: center;
+  color: var(--muted);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.7);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 50;
+}
+
+.modal-content {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 24px 40px rgba(15, 23, 42, 0.5);
+}
+
+.modal-subtitle {
+  color: var(--muted);
+  margin: 6px 0 18px;
+  font-size: 0.9rem;
+}
+
+.modal-form {
+  display: grid;
+  gap: 12px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.muted {
   color: var(--muted);
 }
 
