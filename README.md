@@ -44,3 +44,16 @@ http://localhost:3000
 | 3  | Edit Alumni   | Memperbarui data alumni         | Berhasil |
 | 4  | Hapus Alumni  | Menghapus data alumni           | Berhasil |
 | 5  | Lihat Data    | Menampilkan semua data alumni   | Berhasil |
+
+## Pengujian Sistem
+
+Bagian ini menjelaskan pengujian yang dilakukan untuk memastikan setiap fitur utama berjalan sesuai kebutuhan dan dapat digunakan dengan baik oleh pengguna.
+
+| No | Fitur yang Diuji | Skenario Pengujian | Hasil yang Diharapkan | Hasil Pengujian | Status |
+|----|------------------|--------------------|----------------------|-----------------|--------|
+| 1 | Pencarian data tanpa login | Pengunjung mencari data alumni menggunakan kolom pencarian tanpa login | Data alumni yang sesuai tampil di tabel | Berhasil | Selesai |
+| 2 | Login admin | Admin memasukkan username dan password yang benar | Sistem menampilkan status login berhasil dan akses CRUD aktif | Berhasil | Selesai |
+| 3 | Tambah data (Create) | Admin menambahkan data alumni baru melalui form | Data baru tersimpan dan tampil di tabel | Berhasil | Selesai |
+| 4 | Edit data (Update) | Admin mengubah data alumni yang ada | Data alumni diperbarui di tabel | Berhasil | Selesai |
+| 5 | Hapus data (Delete) | Admin menghapus salah satu data alumni | Data alumni terhapus dari tabel | Berhasil | Selesai |
+
