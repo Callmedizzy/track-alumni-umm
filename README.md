@@ -57,3 +57,12 @@ Bagian ini menjelaskan pengujian yang dilakukan untuk memastikan setiap fitur ut
 | 4 | Edit data (Update) | Admin mengubah data alumni yang ada | Data alumni diperbarui di tabel | Berhasil | Selesai |
 | 5 | Hapus data (Delete) | Admin menghapus salah satu data alumni | Data alumni terhapus dari tabel | Berhasil | Selesai |
 
+## Login Admin
+
+Untuk masuk sebagai admin, gunakan kredensial berikut:
+
+- Username: `admin`
+- Password: `admin123`
+
+Setelah login, fitur Tambah, Edit, dan Hapus data alumni akan aktif.
+
