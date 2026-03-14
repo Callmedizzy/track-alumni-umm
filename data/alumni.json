@@ -51,6 +51,42 @@
     "graduationYear": "2026",
     "job": "Software Engineer",
     "company": "Capcom",
-    "location": "Jepang"
+    "location": "Malang"
+  },
+  {
+    "id": 1773461332570,
+    "name": "Jokowi",
+    "program": "Teknik Elektro",
+    "graduationYear": "1945",
+    "job": "BUMN",
+    "company": "PT Solo Jaya Abadi",
+    "location": "Solo"
+  },
+  {
+    "id": 1773461367004,
+    "name": "Reno Wahyu",
+    "program": "Teknik Informatika",
+    "graduationYear": "2026",
+    "job": "Software Engginer",
+    "company": "PT Gojek",
+    "location": "Malang"
+  },
+  {
+    "id": 1773461453984,
+    "name": "Haikal Hafidz",
+    "program": "Teknik Informatika",
+    "graduationYear": "2026",
+    "job": "Mobile App Developer",
+    "company": "Valve",
+    "location": "Amerika"
+  },
+  {
+    "id": 1773461751023,
+    "name": "Mukhammad Rangga",
+    "program": "Teknik Informatika",
+    "graduationYear": "2026",
+    "job": "Designer",
+    "company": "Kominfo",
+    "location": "Jakarta"
   }
 ]
