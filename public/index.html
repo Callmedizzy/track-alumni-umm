@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Pelacakan Alumni</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <img class="logo-img" src="logo-umm.png" alt="Logo UMM" />
+      <div>
+        <h1>Sistem Pelacakan Alumni</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Tambah Data Alumni</h2>
+      <form id="alumniForm" class="form-grid">
+        <div class="field">
+          <label for="name">Nama</label>
+          <input type="text" id="name" name="name" placeholder="Contoh: Rina Putri" required />
+        </div>
+
+        <div class="field">
+          <label for="program">Program Studi</label>
+          <input type="text" id="program" name="program" placeholder="Contoh: Teknik Informatika" required />
+        </div>
+
+        <div class="field">
+          <label for="graduationYear">Tahun Lulus</label>
+          <input type="text" id="graduationYear" name="graduationYear" placeholder="Contoh: 2023" required />
+        </div>
+
+        <div class="field">
+          <label for="job">Pekerjaan Saat Ini</label>
+          <input type="text" id="job" name="job" placeholder="Contoh: Software Engineer" required />
+        </div>
+
+        <div class="field">
+          <label for="company">Perusahaan</label>
+          <input type="text" id="company" name="company" placeholder="Contoh: PT Teknologi Maju" required />
+        </div>
+
+        <div class="field">
+          <label for="location">Lokasi</label>
+          <input type="text" id="location" name="location" placeholder="Contoh: Jakarta" required />
+        </div>
+
+        <button type="submit" class="btn primary">Simpan Data</button>
+      </form>
+
+      <p id="status" class="status">Siap menerima input data.</p>
+    </section>
+
+    <section class="card">
+      <h2>Daftar Alumni</h2>
+
+      <div class="search-bar">
+        <input type="text" id="searchName" placeholder="Cari berdasarkan nama" />
+        <button id="searchBtn" class="btn">Cari</button>
+        <button id="resetBtn" class="btn ghost">Tampilkan Semua</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="alumniTable">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Program Studi</th>
+              <th>Tahun Lulus</th>
+              <th>Pekerjaan</th>
+              <th>Perusahaan</th>
+              <th>Lokasi</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="7" class="empty">Belum ada data alumni.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer"></footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

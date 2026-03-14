@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1710000000001,
+    "name": "Rina Putri",
+    "program": "Teknik Informatika",
+    "graduationYear": "2023",
+    "job": "Software Engineer",
+    "company": "PT Teknologi Maju",
+    "location": "Jakarta"
+  },
+  {
+    "id": 1710000000002,
+    "name": "Budi Santoso",
+    "program": "Sistem Informasi",
+    "graduationYear": "2022",
+    "job": "Data Analyst",
+    "company": "Insight Nusantara",
+    "location": "Bandung"
+  },
+  {
+    "id": 1710000000003,
+    "name": "Dewi Lestari",
+    "program": "Teknik Industri",
+    "graduationYear": "2021",
+    "job": "Project Manager",
+    "company": "Global Manufacture",
+    "location": "Surabaya"
+  },
+  {
+    "id": 1710000000004,
+    "name": "Andi Pratama",
+    "program": "Teknik Elektro",
+    "graduationYear": "2020",
+    "job": "IoT Engineer",
+    "company": "Smart Device Labs",
+    "location": "Yogyakarta"
+  },
+  {
+    "id": 1773454143008,
+    "name": "Adam Fauzan",
+    "program": "Teknik Informatika",
+    "graduationYear": "2024",
+    "job": "Software Engginer",
+    "company": "Capcom",
+    "location": "Jepang"
+  }
+]

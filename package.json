@@ -1,0 +1,20 @@
+{
+  "name": "alumni-tracker",
+  "version": "1.0.0",
+  "description": "Sistem Pelacakan Alumni sederhana untuk tugas kuliah.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "alumni",
+    "tracker",
+    "express",
+    "json"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
