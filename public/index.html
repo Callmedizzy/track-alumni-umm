@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sistem Pelacakan Alumni</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
   
@@ -71,21 +72,45 @@
           </div>
           
           <p id="loginHint" class="status warning">Silakan login sebagai admin untuk mengubah data alumni.</p>
+
+          <div id="importContainer" class="import-section hidden" style="margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px dashed #ccc;">
+            <h3 style="margin-bottom: 10px; font-size: 16px;">Import Data dari Excel (Opsional)</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+               <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" disabled />
+               <button type="button" class="btn secondary-btn" id="importExcelBtn" disabled>Import</button>
+            </div>
+            <p style="font-size: 13px; color: #666; margin-top: 8px;">*Format: Nama Lulusan, NIM, Tahun Masuk, Tanggal Lulus, Fakultas, Program Studi, Pekerjaan, Perusahaan, Lokasi, Status.</p>
+          </div>
           
           <form id="alumniForm" class="form-grid">
             <div class="field">
-              <label for="name">Nama Lengkap</label>
-              <input type="text" id="name" name="name" placeholder="Contoh: Rina Putri" required />
+              <label for="namaLulusan">Nama Lulusan</label>
+              <input type="text" id="namaLulusan" name="namaLulusan" placeholder="Contoh: Rina Putri" required />
             </div>
 
             <div class="field">
-              <label for="program">Program Studi</label>
-              <input type="text" id="program" name="program" placeholder="Contoh: Teknik Informatika" required />
+              <label for="nim">NIM</label>
+              <input type="text" id="nim" name="nim" placeholder="Contoh: 202110370311000" required />
             </div>
 
             <div class="field">
-              <label for="graduationYear">Tahun Lulus</label>
-              <input type="text" id="graduationYear" name="graduationYear" placeholder="Contoh: 2023" required />
+              <label for="tahunMasuk">Tahun Masuk</label>
+              <input type="number" id="tahunMasuk" name="tahunMasuk" placeholder="Contoh: 2021" required />
+            </div>
+
+            <div class="field">
+              <label for="tanggalLulus">Tanggal Lulus</label>
+              <input type="date" id="tanggalLulus" name="tanggalLulus" required />
+            </div>
+
+            <div class="field">
+              <label for="fakultas">Fakultas</label>
+              <input type="text" id="fakultas" name="fakultas" placeholder="Contoh: Teknik" required />
+            </div>
+
+            <div class="field">
+              <label for="programStudi">Program Studi</label>
+              <input type="text" id="programStudi" name="programStudi" placeholder="Contoh: Teknik Informatika" required />
             </div>
 
             <div class="field">
@@ -135,9 +160,12 @@
             <table id="alumniTable">
               <thead>
                 <tr>
-                  <th>Nama</th>
-                  <th>Prodi</th>
-                  <th>Lulus</th>
+                  <th>Nama Lulusan</th>
+                  <th>NIM</th>
+                  <th>Tahun Masuk</th>
+                  <th>Tanggal Lulus</th>
+                  <th>Fakultas</th>
+                  <th>Program Studi</th>
                   <th>Pekerjaan</th>
                   <th>Perusahaan</th>
                   <th>Lokasi</th>
@@ -147,7 +175,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="8" class="empty">Belum ada data alumni.</td>
+                  <td colspan="11" class="empty">Belum ada data alumni.</td>
                 </tr>
               </tbody>
             </table>

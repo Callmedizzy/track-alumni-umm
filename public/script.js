@@ -16,6 +16,9 @@ const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
 const cancelLogin = document.getElementById("cancelLogin");
 const loginHint = document.getElementById("loginHint");
+const excelFileInput = document.getElementById("excelFileInput");
+const importExcelBtn = document.getElementById("importExcelBtn");
+const importContainer = document.getElementById("importContainer");
 
 const STATUS_STORAGE_KEY = "alumniStatusMap";
 const ADMIN_STORAGE_KEY = "adminLogin";
@@ -72,25 +75,7 @@ function setStatus(message, type = "") {
   statusEl.className = `status ${type}`.trim();
 }
 
-function validateGraduationYear(yearValue) {
-  const yearString = String(yearValue ?? "").trim();
-  const yearNumber = Number(yearString);
-  const currentYear = new Date().getFullYear();
 
-  if (!yearString) {
-    return "Tahun lulus wajib diisi.";
-  }
-
-  if (!Number.isInteger(yearNumber)) {
-    return "Tahun lulus harus berupa angka.";
-  }
-
-  if (yearNumber > currentYear) {
-    return "Tahun lulus tidak boleh lebih besar dari tahun sekarang.";
-  }
-
-  return "";
-}
 
 function updateStats(data) {
   const total = data.length;
@@ -137,6 +122,9 @@ function updateAuthUI() {
   const admin = isAdmin();
   authButton.textContent = admin ? "Logout Admin" : "Login Admin";
   loginHint.classList.toggle("hidden", admin);
+  importContainer.classList.toggle("hidden", !admin);
+  excelFileInput.disabled = !admin;
+  importExcelBtn.disabled = !admin;
   submitBtn.classList.toggle("hidden", !admin);
 
   form.querySelectorAll("input, select").forEach((input) => {
@@ -163,16 +151,19 @@ function setEditMode(alumni) {
   }
 
   editingId = alumni.id;
-  form.name.value = alumni.name;
-  form.program.value = alumni.program;
-  form.graduationYear.value = alumni.graduationYear;
-  form.job.value = alumni.job;
-  form.company.value = alumni.company;
-  form.location.value = alumni.location;
+  form.namaLulusan.value = alumni.namaLulusan || "";
+  form.nim.value = alumni.nim || "";
+  form.tahunMasuk.value = alumni.tahunMasuk || "";
+  form.tanggalLulus.value = alumni.tanggalLulus || "";
+  form.fakultas.value = alumni.fakultas || "";
+  form.programStudi.value = alumni.programStudi || "";
+  form.job.value = alumni.job || "";
+  form.company.value = alumni.company || "";
+  form.location.value = alumni.location || "";
   statusSelect.value = normalizeStatus(alumni.status);
   submitBtn.textContent = "Perbarui Data";
   setStatus("Mode edit: perbarui data lalu simpan.");
-  form.name.focus();
+  form.namaLulusan.focus();
 }
 
 function renderTable(data) {
@@ -188,7 +179,7 @@ function renderTable(data) {
 
   if (!lastData.length) {
     const row = document.createElement("tr");
-    row.innerHTML = '<td colspan="8" class="empty">Data tidak ditemukan.</td>';
+    row.innerHTML = '<td colspan="11" class="empty">Data tidak ditemukan.</td>';
     tableBody.appendChild(row);
     updateStats([]);
     return;
@@ -205,12 +196,15 @@ function renderTable(data) {
 
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.program}</td>
-      <td>${item.graduationYear}</td>
-      <td>${item.job}</td>
-      <td>${item.company}</td>
-      <td>${item.location}</td>
+      <td>${item.namaLulusan || "-"}</td>
+      <td>${item.nim || "-"}</td>
+      <td>${item.tahunMasuk || "-"}</td>
+      <td>${item.tanggalLulus || "-"}</td>
+      <td>${item.fakultas || "-"}</td>
+      <td>${item.programStudi || "-"}</td>
+      <td>${item.job || "-"}</td>
+      <td>${item.company || "-"}</td>
+      <td>${item.location || "-"}</td>
       <td><span class="status-pill ${statusClass}">${item.status}</span></td>
       <td>${actions}</td>
     `;
@@ -239,20 +233,17 @@ form.addEventListener("submit", async (event) => {
   }
 
   const payload = {
-    name: form.name.value.trim(),
-    program: form.program.value.trim(),
-    graduationYear: form.graduationYear.value.trim(),
+    namaLulusan: form.namaLulusan.value.trim(),
+    nim: form.nim.value.trim(),
+    tahunMasuk: form.tahunMasuk.value.trim(),
+    tanggalLulus: form.tanggalLulus.value,
+    fakultas: form.fakultas.value.trim(),
+    programStudi: form.programStudi.value.trim(),
     job: form.job.value.trim(),
     company: form.company.value.trim(),
     location: form.location.value.trim(),
     status: statusSelect.value
   };
-
-  const yearError = validateGraduationYear(payload.graduationYear);
-  if (yearError) {
-    setStatus(yearError, "error");
-    return;
-  }
 
   if (!payload.status) {
     setStatus("Status pelacakan wajib diisi.", "error");
@@ -295,6 +286,79 @@ form.addEventListener("submit", async (event) => {
   } catch (error) {
     setStatus("Terjadi kesalahan pada server.", "error");
   }
+});
+
+importExcelBtn.addEventListener("click", async () => {
+  if (!isAdmin()) return;
+
+  const file = excelFileInput.files[0];
+  if (!file) {
+    setStatus("Silakan pilih file Excel (.xlsx, .xls) atau CSV terlebih dahulu.", "warning");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const json = XLSX.utils.sheet_to_json(worksheet);
+
+      if (!json || json.length === 0) {
+        setStatus("File Excel kosong atau format tidak sesuai.", "error");
+        return;
+      }
+
+      // Map JSON properties robustly
+      const payloadRecords = json.map(row => {
+        return {
+          namaLulusan: row["Nama Lulusan"] || row["Nama"] || row["nama"] || "",
+          nim: row["NIM"] || row["nim"] || "",
+          tahunMasuk: row["Tahun Masuk"] || row["Tahun"] || row["tahunMasuk"] || "",
+          tanggalLulus: row["Tanggal Lulus"] || row["Lulus"] || row["tanggalLulus"] || "",
+          fakultas: row["Fakultas"] || row["fakultas"] || "",
+          programStudi: row["Program Studi"] || row["Prodi"] || row["programStudi"] || "",
+          job: row["Pekerjaan"] || row["job"] || "",
+          company: row["Perusahaan"] || row["company"] || "",
+          location: row["Lokasi"] || row["location"] || "",
+          status: normalizeStatus(row["Status"] || row["status"])
+        };
+      });
+
+      setStatus(`Mengirim ${payloadRecords.length} data ke server...`, "warning");
+
+      const response = await fetch("/alumni/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payloadRecords)
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        setStatus(err.message || "Gagal mengimpor data.", "error");
+        return;
+      }
+
+      const result = await response.json();
+      
+      if (Array.isArray(result)) {
+        result.forEach((item, index) => {
+          setStatusForId(item.id, payloadRecords[index].status);
+        });
+      }
+
+      setStatus(`Berhasil menambahkan ${result.length} data dari Excel.`, "success");
+      excelFileInput.value = "";
+      fetchAlumni();
+    } catch (error) {
+      console.error(error);
+      setStatus("Gagal membaca file Excel.", "error");
+    }
+  };
+
+  reader.readAsArrayBuffer(file);
 });
 
 searchBtn.addEventListener("click", () => {

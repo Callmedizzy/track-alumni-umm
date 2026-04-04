@@ -57,25 +57,6 @@ function writeAlumniData(data) {
   }
 }
 
-function validateGraduationYear(graduationYear) {
-  const yearString = String(graduationYear ?? "").trim();
-  const yearNumber = Number(yearString);
-  const currentYear = new Date().getFullYear();
-
-  if (!yearString) {
-    return "Tahun lulus wajib diisi.";
-  }
-
-  if (!Number.isInteger(yearNumber)) {
-    return "Tahun lulus harus berupa angka.";
-  }
-
-  if (yearNumber > currentYear) {
-    return "Tahun lulus tidak boleh lebih besar dari tahun sekarang.";
-  }
-
-  return "";
-}
 
 // GET /alumni -> list all alumni
 app.get("/alumni", (req, res) => {
@@ -87,26 +68,24 @@ app.get("/alumni", (req, res) => {
 app.post("/alumni", (req, res) => {
   try {
     console.log("Request body:", req.body);
-    const { name, program, graduationYear, job, company, location } = req.body || {};
+    const { namaLulusan, nim, tahunMasuk, tanggalLulus, fakultas, programStudi, job, company, location } = req.body || {};
 
     // Basic validation
-    if (!name || !program || !graduationYear || !job || !company || !location) {
+    if (!namaLulusan || !nim || !tahunMasuk || !tanggalLulus || !fakultas || !programStudi || !job || !company || !location) {
       return res.status(400).json({
         message: "Semua field wajib diisi."
       });
     }
 
-    const yearError = validateGraduationYear(graduationYear);
-    if (yearError) {
-      return res.status(400).json({ message: yearError });
-    }
-
     const alumni = readAlumniData();
     const newAlumni = {
       id: Date.now(),
-      name: String(name).trim(),
-      program: String(program).trim(),
-      graduationYear: String(graduationYear).trim(),
+      namaLulusan: String(namaLulusan).trim(),
+      nim: String(nim).trim(),
+      tahunMasuk: String(tahunMasuk).trim(),
+      tanggalLulus: String(tanggalLulus).trim(),
+      fakultas: String(fakultas).trim(),
+      programStudi: String(programStudi).trim(),
       job: String(job).trim(),
       company: String(company).trim(),
       location: String(location).trim()
@@ -126,23 +105,62 @@ app.post("/alumni", (req, res) => {
   }
 });
 
+// POST /alumni/bulk -> add multiple alumni
+app.post("/alumni/bulk", (req, res) => {
+  try {
+    const records = req.body;
+
+    if (!Array.isArray(records)) {
+      return res.status(400).json({ message: "Data harus berupa array." });
+    }
+
+    const alumni = readAlumniData();
+    const newRecords = [];
+
+    records.forEach((record, index) => {
+      const { namaLulusan, nim, tahunMasuk, tanggalLulus, fakultas, programStudi, job, company, location } = record;
+      
+      const newAlumni = {
+         id: Date.now() + index, // prevent id collision
+         namaLulusan: String(namaLulusan || "").trim(),
+         nim: String(nim || "").trim(),
+         tahunMasuk: String(tahunMasuk || "").trim(),
+         tanggalLulus: String(tanggalLulus || "").trim(),
+         fakultas: String(fakultas || "").trim(),
+         programStudi: String(programStudi || "").trim(),
+         job: String(job || "").trim(),
+         company: String(company || "").trim(),
+         location: String(location || "").trim()
+      };
+      
+      newRecords.push(newAlumni);
+      alumni.push(newAlumni);
+    });
+
+    const saved = writeAlumniData(alumni);
+    if (!saved) {
+      return res.status(500).json({ message: "Gagal menyimpan data bulk alumni." });
+    }
+
+    res.status(201).json(newRecords);
+  } catch (error) {
+    console.error("Error pada POST /alumni/bulk.", error);
+    res.status(500).json({ message: "Terjadi kesalahan bulk insert pada server." });
+  }
+});
+
 // PUT /alumni/:id -> update alumni by id
 app.put("/alumni/:id", (req, res) => {
   try {
     const id = Number(req.params.id);
-    const { name, program, graduationYear, job, company, location } = req.body || {};
+    const { namaLulusan, nim, tahunMasuk, tanggalLulus, fakultas, programStudi, job, company, location } = req.body || {};
 
     if (!Number.isFinite(id)) {
       return res.status(400).json({ message: "ID alumni tidak valid." });
     }
 
-    if (!name || !program || !graduationYear || !job || !company || !location) {
+    if (!namaLulusan || !nim || !tahunMasuk || !tanggalLulus || !fakultas || !programStudi || !job || !company || !location) {
       return res.status(400).json({ message: "Semua field wajib diisi." });
-    }
-
-    const yearError = validateGraduationYear(graduationYear);
-    if (yearError) {
-      return res.status(400).json({ message: yearError });
     }
 
     const alumni = readAlumniData();
@@ -154,9 +172,12 @@ app.put("/alumni/:id", (req, res) => {
 
     const updatedAlumni = {
       ...alumni[index],
-      name: String(name).trim(),
-      program: String(program).trim(),
-      graduationYear: String(graduationYear).trim(),
+      namaLulusan: String(namaLulusan).trim(),
+      nim: String(nim).trim(),
+      tahunMasuk: String(tahunMasuk).trim(),
+      tanggalLulus: String(tanggalLulus).trim(),
+      fakultas: String(fakultas).trim(),
+      programStudi: String(programStudi).trim(),
       job: String(job).trim(),
       company: String(company).trim(),
       location: String(location).trim()
@@ -186,7 +207,7 @@ app.get("/alumni/search", (req, res) => {
   }
 
   const results = alumni.filter((item) =>
-    item.name.toLowerCase().includes(query)
+    (item.namaLulusan || "").toLowerCase().includes(query)
   );
 
   res.json(results);
