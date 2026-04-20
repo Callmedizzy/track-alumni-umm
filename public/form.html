@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Pelacakan - Sistem Pelacakan Alumni</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  
+  <nav class="top-navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <img class="logo-img" src="logo-umm.png" alt="Logo UMM" />
+        <h1>UMM Tracker</h1>
+      </div>
+      
+      <div class="nav-links">
+        <a class="nav-item" href="index.html"> Dashboard</a>
+        <a class="nav-item active" href="form.html"> Form Pelacakan</a>
+        <a class="nav-item" href="daftar.html"> Daftar Alumni</a>
+      </div>
+
+      <div class="nav-actions">
+        <button id="authButton" class="btn ghost auth-btn" type="button">Login Admin</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="app-wrapper">
+    <main class="main-content">
+
+      <div class="page-header">
+        <h2 class="page-title">📝 Form Pelacakan Alumni</h2>
+        <p class="page-subtitle">Tambahkan atau perbarui data alumni melalui form di bawah ini.</p>
+      </div>
+
+      <div class="content-grid">
+        <section id="tambah-alumni" class="card form-section">
+          <div class="card-header">
+            <h2> Form Pelacakan Alumni</h2>
+          </div>
+          
+          <p id="loginHint" class="status warning">Silakan login sebagai admin untuk mengubah data alumni.</p>
+
+          <div id="importContainer" class="import-section hidden" style="margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px dashed #ccc;">
+            <h3 style="margin-bottom: 10px; font-size: 16px;">Import Data dari Excel (Opsional)</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+               <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" disabled />
+               <button type="button" class="btn secondary-btn" id="importExcelBtn" disabled>Import</button>
+               <a href="template.csv" download="template-alumni.csv" class="btn ghost" style="padding: 8px 16px; font-size: 14px; text-decoration: none;">⬇️ Unduh Template</a>
+            </div>
+            <p style="font-size: 13px; color: #666; margin-top: 8px;">*Format: Nama Lulusan, NIM, Tahun Masuk, Tanggal Lulus, Fakultas, Program Studi, Pekerjaan, Perusahaan, Lokasi, Status.</p>
+          </div>
+          
+          <form id="alumniForm" class="form-grid">
+            <div class="field">
+              <label for="namaLulusan">Nama Lulusan</label>
+              <input type="text" id="namaLulusan" name="namaLulusan" placeholder="Contoh: Rina Putri" required />
+            </div>
+
+            <div class="field">
+              <label for="nim">NIM</label>
+              <input type="text" id="nim" name="nim" placeholder="Contoh: 202110370311000" required />
+            </div>
+
+            <div class="field">
+              <label for="tahunMasuk">Tahun Masuk</label>
+              <input type="number" id="tahunMasuk" name="tahunMasuk" placeholder="Contoh: 2021" required />
+            </div>
+
+            <div class="field">
+              <label for="tanggalLulus">Tanggal Lulus</label>
+              <input type="date" id="tanggalLulus" name="tanggalLulus" required />
+            </div>
+
+            <div class="field">
+              <label for="fakultas">Fakultas</label>
+              <input type="text" id="fakultas" name="fakultas" placeholder="Contoh: Teknik" required />
+            </div>
+
+            <div class="field">
+              <label for="programStudi">Program Studi</label>
+              <input type="text" id="programStudi" name="programStudi" placeholder="Contoh: Teknik Informatika" required />
+            </div>
+
+            <div class="field">
+              <label for="job">Pekerjaan Saat Ini</label>
+              <input type="text" id="job" name="job" placeholder="Contoh: Software Engineer" required />
+            </div>
+
+            <div class="field">
+              <label for="company">Perusahaan</label>
+              <input type="text" id="company" name="company" placeholder="Contoh: PT Teknologi Maju" required />
+            </div>
+
+            <div class="field">
+              <label for="location">Lokasi</label>
+              <input type="text" id="location" name="location" placeholder="Contoh: Jakarta" required />
+            </div>
+
+            <div class="field full-width">
+              <label for="status">Status Pelacakan</label>
+              <select id="status" name="status" required>
+                <option value="Teridentifikasi">Teridentifikasi</option>
+                <option value="Perlu Verifikasi">Perlu Verifikasi</option>
+                <option value="Belum Dilacak" selected>Belum Dilacak</option>
+              </select>
+            </div>
+
+            <div class="form-actions full-width">
+              <button type="submit" class="btn primary" id="submitBtn">Simpan Data</button>
+            </div>
+          </form>
+
+          <p id="statusMessage" class="status">Siap menerima input data.</p>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <footer id="laporan" class="app-footer">
+    <p>&copy; 2026 Sistem Pelacakan Alumni. All rights reserved.</p>
+  </footer>
+
+  <div id="loginModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="modal-content">
+      <h2 id="loginTitle">Login Admin</h2>
+      <p class="modal-subtitle">Masuk dengan kredensial admin Anda.</p>
+      <form id="loginForm" class="modal-form">
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="off" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <p id="loginError" class="status error hidden">Username atau password salah.</p>
+        <div class="modal-actions">
+          <button type="button" id="cancelLogin" class="btn ghost">Batal</button>
+          <button type="submit" class="btn primary">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

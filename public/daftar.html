@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard - Sistem Pelacakan Alumni</title>
+  <title>Daftar Alumni - Sistem Pelacakan Alumni</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,9 +16,9 @@
       </div>
       
       <div class="nav-links">
-        <a class="nav-item active" href="index.html"> Dashboard</a>
+        <a class="nav-item" href="index.html"> Dashboard</a>
         <a class="nav-item" href="form.html"> Form Pelacakan</a>
-        <a class="nav-item" href="daftar.html"> Daftar Alumni</a>
+        <a class="nav-item active" href="daftar.html"> Daftar Alumni</a>
       </div>
 
       <div class="nav-actions">
@@ -29,57 +29,49 @@
 
   <div class="app-wrapper">
     <main class="main-content">
-      
-      <div class="hero-section">
-        <div class="hero-text">
-          <h2 class="hero-title">Selamat Datang di Sistem Pelacakan</h2>
-          <p class="hero-subtitle">Kelola dan lacak data alumni dengan mudah dan efisien.</p>
-        </div>
-        
-        <section id="dashboard" class="stats-grid">
-          <div class="stat-card">
-            <div>
-              <p>Total Alumni</p>
-              <h3 id="totalCount">0</h3>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div>
-              <p>Teridentifikasi</p>
-              <h3 id="identifiedCount">0</h3>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div>
-              <p>Perlu Verifikasi</p>
-              <h3 id="verifyCount">0</h3>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div>
-              <p>Belum Dilacak</p>
-              <h3 id="untrackedCount">0</h3>
-            </div>
-          </div>
-        </section>
+
+      <div class="page-header">
+        <h2 class="page-title">📋 Daftar Alumni</h2>
+        <p class="page-subtitle">Lihat, cari, dan kelola seluruh data alumni yang tersimpan.</p>
       </div>
 
-      <!-- Quick action cards for navigation -->
       <div class="content-grid">
-        <div class="quick-actions-grid">
-          <a href="form.html" class="quick-action-card">
-            <div class="quick-action-icon">📝</div>
-            <h3>Form Pelacakan</h3>
-            <p>Tambah atau perbarui data alumni baru melalui form input.</p>
-            <span class="quick-action-link">Buka Form →</span>
-          </a>
-          <a href="daftar.html" class="quick-action-card">
-            <div class="quick-action-icon">📋</div>
-            <h3>Daftar Alumni</h3>
-            <p>Lihat, cari, dan kelola seluruh data alumni yang tersimpan.</p>
-            <span class="quick-action-link">Lihat Daftar →</span>
-          </a>
-        </div>
+        <section id="data-alumni" class="card table-section">
+          <div class="card-header">
+            <h2> Daftar Alumni</h2>
+          </div>
+
+          <div class="search-bar">
+            <input type="text" id="searchName" placeholder="Cari berdasarkan nama..." />
+            <button id="searchBtn" class="btn secondary-btn">Cari Data</button>
+            <button id="resetBtn" class="btn ghost">Reset</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table id="alumniTable">
+              <thead>
+                <tr>
+                  <th>Nama Lulusan</th>
+                  <th>NIM</th>
+                  <th>Tahun Masuk</th>
+                  <th>Tanggal Lulus</th>
+                  <th>Fakultas</th>
+                  <th>Program Studi</th>
+                  <th>Pekerjaan</th>
+                  <th>Perusahaan</th>
+                  <th>Lokasi</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="11" class="empty">Belum ada data alumni.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
 
     </main>
