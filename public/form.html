@@ -60,48 +60,66 @@
               <input type="text" id="nim" name="nim" placeholder="Contoh: 202110370311000" required />
             </div>
 
+            <!-- 8 Data Utama Dosen -->
             <div class="field">
-              <label for="tahunMasuk">Tahun Masuk</label>
-              <input type="number" id="tahunMasuk" name="tahunMasuk" placeholder="Contoh: 2021" required />
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="contoh@email.com" />
             </div>
 
             <div class="field">
-              <label for="tanggalLulus">Tanggal Lulus</label>
-              <input type="date" id="tanggalLulus" name="tanggalLulus" required />
-            </div>
-
-            <div class="field">
-              <label for="fakultas">Fakultas</label>
-              <input type="text" id="fakultas" name="fakultas" placeholder="Contoh: Teknik" required />
-            </div>
-
-            <div class="field">
-              <label for="programStudi">Program Studi</label>
-              <input type="text" id="programStudi" name="programStudi" placeholder="Contoh: Teknik Informatika" required />
-            </div>
-
-            <div class="field">
-              <label for="job">Pekerjaan Saat Ini</label>
-              <input type="text" id="job" name="job" placeholder="Contoh: Software Engineer" required />
-            </div>
-
-            <div class="field">
-              <label for="company">Perusahaan</label>
-              <input type="text" id="company" name="company" placeholder="Contoh: PT Teknologi Maju" required />
-            </div>
-
-            <div class="field">
-              <label for="location">Lokasi</label>
-              <input type="text" id="location" name="location" placeholder="Contoh: Jakarta" required />
+              <label for="noHp">No HP / WhatsApp</label>
+              <input type="tel" id="noHp" name="noHp" placeholder="0812xxxxxx" />
             </div>
 
             <div class="field full-width">
-              <label for="status">Status Pelacakan</label>
-              <select id="status" name="status" required>
-                <option value="Teridentifikasi">Teridentifikasi</option>
-                <option value="Perlu Verifikasi">Perlu Verifikasi</option>
-                <option value="Belum Dilacak" selected>Belum Dilacak</option>
+              <label for="sosmed">Alamat Sosial Media (LinkedIn, IG, FB, atau TikTok)</label>
+              <input type="text" id="sosmed" name="sosmed" placeholder="Link/Username sosial media pribadi Anda" />
+            </div>
+
+            <div class="field">
+              <label for="statusPekerjaan">Status Pekerjaan</label>
+              <select id="statusPekerjaan" name="statusPekerjaan">
+                <option value="">-- Pilih Status --</option>
+                <option value="PNS">PNS</option>
+                <option value="Swasta">Swasta</option>
+                <option value="Wirausaha">Wirausaha</option>
+                <option value="Lainnya">Lainnya / Belum Bekerja</option>
               </select>
+            </div>
+
+            <div class="field">
+              <label for="posisi">Posisi / Jabatan</label>
+              <input type="text" id="posisi" name="posisi" placeholder="Contoh: Staff IT, Pemilik Usaha" />
+            </div>
+
+            <div class="field">
+              <label for="tempatKerja">Nama Tempat Bekerja / Usaha</label>
+              <input type="text" id="tempatKerja" name="tempatKerja" placeholder="Nama instansi atau perusahaan" />
+            </div>
+
+            <div class="field">
+              <label for="alamatKerja">Alamat Tempat Bekerja</label>
+              <input type="text" id="alamatKerja" name="alamatKerja" placeholder="Kota atau alamat lengkap" />
+            </div>
+
+            <div class="field full-width">
+              <label for="sosmedKerja">Alamat Sosial Media Tempat Bekerja</label>
+              <input type="text" id="sosmedKerja" name="sosmedKerja" placeholder="Link website/IG perusahaan" />
+            </div>
+
+            <!-- Privacy Disclaimer -->
+            <div class="field full-width" style="background: var(--warning-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--warning); margin-top: 10px;">
+              <label style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer; margin-bottom: 0;">
+                <input type="checkbox" id="privacyCheck" required style="margin-top: 4px;" />
+                <span style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.4;">
+                  <strong>Pernyataan Privasi:</strong> Semua data yang diisi pada formulir ini murni digunakan hanya untuk kepentingan pembelajaran. Data dilarang disebarkan untuk kepentingan apapun. Saya menyetujui hal ini.
+                </span>
+              </label>
+            </div>
+
+            <!-- Error Validation Box -->
+            <div id="validationAlert" class="status error hidden full-width" style="margin-top: 10px;">
+              Minimal 4 dari 8 data informasi pekerjaan/kontak harus diisi!
             </div>
 
             <div class="form-actions full-width">

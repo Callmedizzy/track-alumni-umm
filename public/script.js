@@ -331,22 +331,43 @@ if (form) {
     }
 
     const payload = {
-      namaLulusan: form.namaLulusan.value.trim(),
-      nim: form.nim.value.trim(),
-      tahunMasuk: form.tahunMasuk.value.trim(),
-      tanggalLulus: form.tanggalLulus.value,
-      fakultas: form.fakultas.value.trim(),
-      programStudi: form.programStudi.value.trim(),
-      job: form.job.value.trim(),
-      company: form.company.value.trim(),
-      location: form.location.value.trim(),
-      status: statusSelect ? statusSelect.value : "Belum Dilacak"
+      namaLulusan: form.namaLulusan?.value.trim() || "",
+      nim: form.nim?.value.trim() || "",
+      email: form.email?.value.trim() || "",
+      noHp: form.noHp?.value.trim() || "",
+      sosmed: form.sosmed?.value.trim() || "",
+      statusPekerjaan: form.statusPekerjaan?.value.trim() || "",
+      posisi: form.posisi?.value.trim() || "",
+      tempatKerja: form.tempatKerja?.value.trim() || "",
+      alamatKerja: form.alamatKerja?.value.trim() || "",
+      sosmedKerja: form.sosmedKerja?.value.trim() || "",
+      status: "Teridentifikasi" // Default karena ada data masuk
     };
 
-    if (!payload.status) {
-      setStatus("Status pelacakan wajib diisi.", "error");
+    // Fungsi Validasi 4 dari 8
+    let filledFields = 0;
+    const requiredFields = [
+      payload.email, payload.noHp, payload.sosmed, 
+      payload.statusPekerjaan, payload.posisi, 
+      payload.tempatKerja, payload.alamatKerja, payload.sosmedKerja
+    ];
+    
+    requiredFields.forEach(field => {
+      if (field && field.length > 0) filledFields++;
+    });
+
+    const alertBox = document.getElementById("validationAlert");
+    if (filledFields < 4) {
+      if (alertBox) {
+        alertBox.classList.remove("hidden");
+        alertBox.innerText = `Gagal: Anda baru mengisi ${filledFields} dari 8 informasi yang dibutuhkan. Minimal 4 field harus diisi!`;
+      } else {
+        setStatus(`Gagal: Minimal 4 field informasi kontak/pekerjaan harus diisi. Saat ini: ${filledFields}/8`, "error");
+      }
       return;
     }
+    
+    if (alertBox) alertBox.classList.add("hidden");
 
     const url = editingId ? `/alumni/${editingId}` : "/alumni";
     const method = editingId ? "PUT" : "POST";
