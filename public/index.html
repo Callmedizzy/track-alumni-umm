@@ -9,32 +9,40 @@
 <body>
   
   <nav class="top-navbar">
-    <div class="nav-container">
+    <div class="nav-container pddikti-nav">
       <div class="brand">
         <img class="logo-img" src="logo-umm.png" alt="Logo UMM" />
-        <h1>UMM Tracker</h1>
+        <h1 style="color: #2e1065;">UMM Tracker</h1>
       </div>
 
-      <div class="nav-actions">
-        <button id="authButton" class="btn ghost auth-btn" type="button">Login Admin</button>
+      <div class="nav-links-right">
+        <button id="authButton" class="btn primary-btn btn-small" type="button" style="padding: 6px 16px; border-radius: 8px;">Login Admin</button>
       </div>
     </div>
   </nav>
 
-  <div class="app-wrapper home-wrapper">
+  <div class="hero-banner">
+    <div class="hero-banner-inner">
+      <div class="hero-content">
+         <h3 class="hero-label">Informasi</h3>
+         <h1 class="hero-title-big">Pembaruan Data Diri</h1>
+         <a href="form.html" class="hero-btn">Klik Disini &rarr;</a>
+      </div>
+      <div class="hero-illustration">
+         <!-- Placeholder for 3D illustration -->
+      </div>
+    </div>
+  </div>
+
+  <div class="app-wrapper home-wrapper" style="padding-top: 0;">
     <main class="main-content">
       
-      <div class="hero-section">
-        <div class="hero-text">
-          <h2 class="hero-title">Selamat Datang di Sistem Pelacakan</h2>
-          <p class="hero-subtitle">Kelola dan lacak data alumni dengan mudah dan efisien.</p>
-        </div>
-        
-        <div class="hero-search-bar">
-          <div class="custom-dropdown" id="searchCategoryHolder">
+      <div class="search-section">
+        <div class="hero-search-bar" style="max-width: 900px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+          <div class="custom-dropdown" id="searchCategoryHolder" style="background: #e0e7ff; border-radius: 100px 0 0 100px;">
             <div class="dropdown-trigger" id="dropdownTrigger">
               <span id="selectedCategoryLabel">Semua</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="dropdown-arrow"><path d="m6 9 6 6 6-6"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-arrow"><path d="m6 9 6 6 6-6"/></svg>
             </div>
             <div class="dropdown-options hidden" id="categoryOptions">
               <div class="dropdown-opt active" data-value="semua">Semua</div>
@@ -47,16 +55,58 @@
             </div>
           </div>
           <input type="text" id="heroSearchInput" class="hero-search-input" placeholder="Kata kunci: [Nama] [PT] [Prodi] [NIM] [NIDN] [NUPTK]" />
-          <button type="button" id="heroSearchBtn" class="hero-search-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <button type="button" id="heroSearchBtn" class="hero-search-btn" style="background: transparent; color: #a855f7;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </button>
+        </div>
+        <div class="pencarian-spesifik">
+           <a href="#">Pencarian Spesifik</a>
         </div>
       </div>
 
+      <div class="menu-grid">
+         <div class="menu-card">
+            <div class="menu-icon">📘</div>
+            <div class="menu-text">Program Studi</div>
+         </div>
+         <div class="menu-card">
+            <div class="menu-icon">🏢</div>
+            <div class="menu-text">Perguruan Tinggi</div>
+         </div>
+         <div class="menu-card">
+            <div class="menu-icon">📊</div>
+            <div class="menu-text">Statistik</div>
+         </div>
+         <div class="menu-card">
+            <div class="menu-icon">📚</div>
+            <div class="menu-text">Publikasi</div>
+         </div>
+         <div class="menu-card">
+            <div class="menu-icon">📢</div>
+            <div class="menu-text">Pengumuman</div>
+         </div>
+         <div class="menu-card">
+            <div class="menu-icon">🗺️</div>
+            <div class="menu-text">Peta</div>
+         </div>
+      </div>
 
-
-
-    </main>
+      <div class="bottom-banners">
+         <div class="banner-card banner-purple">
+            <div class="banner-text">
+               <h4>Ada kendala terkait data Pendidikan Tinggi?</h4>
+               <p>Cari informasi <strong>di sini!</strong></p>
+            </div>
+            <div class="banner-icon">💡</div>
+         </div>
+         <div class="banner-card banner-pink">
+            <div class="banner-text">
+               <h4>Cari tahu perbedaannya!</h4>
+               <p>Komparasi perguruan tinggi dan program studi impianmu <strong>di sini!</strong></p>
+            </div>
+            <div class="banner-icon">🔍</div>
+         </div>
+      </div>    </main>
   </div>
 
   <footer id="laporan" class="app-footer">

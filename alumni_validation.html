@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validasi Data Alumni - Track Alumni UMM</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --error: #ef4444;
+            --success: #22c55e;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid var(--border);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text);
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            text-align: center;
+            display: none;
+        }
+
+        .error-msg {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .success-msg {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .counter {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Lengkapi Data Alumni</h1>
+    <p class="subtitle">Silakan isi minimal 4 informasi di bawah ini untuk memvalidasi data Anda.</p>
+
+    <form id="alumniForm">
+        <div class="grid">
+            <div class="form-group">
+                <label for="sosmed_alumni">Alamat Sosial Media</label>
+                <input type="text" id="sosmed_alumni" placeholder="@username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="contoh@mail.com">
+            </div>
+            <div class="form-group">
+                <label for="no_hp">No HP</label>
+                <input type="text" id="no_hp" placeholder="0812...">
+            </div>
+            <div class="form-group">
+                <label for="tempat_kerja">Tempat Bekerja</label>
+                <input type="text" id="tempat_kerja" placeholder="Nama Perusahaan">
+            </div>
+            <div class="form-group">
+                <label for="alamat_kerja">Alamat Bekerja</label>
+                <input type="text" id="alamat_kerja" placeholder="Kota/Alamat">
+            </div>
+            <div class="form-group">
+                <label for="posisi">Posisi</label>
+                <input type="text" id="posisi" placeholder="Software Engineer">
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status">
+                    <option value="">-- Pilih Status --</option>
+                    <option value="PNS">PNS</option>
+                    <option value="Swasta">Swasta</option>
+                    <option value="Wirausaha">Wirausaha</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sosmed_kerja">Sosmed Tempat Kerja</label>
+                <input type="text" id="sosmed_kerja" placeholder="@perusahaan">
+            </div>
+        </div>
+
+        <div class="counter" id="fieldCounter">Terisi: 0/8</div>
+
+        <button type="submit" id="submitBtn">Simpan Data</button>
+    </form>
+
+    <div id="message"></div>
+</div>
+
+<script>
+    const form = document.getElementById('alumniForm');
+    const messageDiv = document.getElementById('message');
+    const counterDiv = document.getElementById('fieldCounter');
+    const inputs = form.querySelectorAll('input, select');
+
+    // List field yang akan divalidasi
+    const validationFields = [
+        'sosmed_alumni',
+        'email',
+        'no_hp',
+        'tempat_kerja',
+        'alamat_kerja',
+        'posisi',
+        'status',
+        'sosmed_kerja'
+    ];
+
+    // Fungsi inti validasi
+    function validateAlumniData() {
+        let filledCount = 0;
+        
+        validationFields.forEach(id => {
+            const element = document.getElementById(id);
+            if (element && element.value.trim() !== '') {
+                filledCount++;
+            }
+        });
+
+        return filledCount;
+    }
+
+    // Update counter secara real-time
+    function updateCounter() {
+        const count = validateAlumniData();
+        counterDiv.textContent = `Terisi: ${count}/8`;
+        
+        if (count >= 4) {
+            counterDiv.style.color = '#22c55e';
+        } else {
+            counterDiv.style.color = '#94a3b8';
+        }
+    }
+
+    // Event listeners
+    inputs.forEach(input => {
+        input.addEventListener('input', updateCounter);
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const filledCount = validateAlumniData();
+        
+        messageDiv.style.display = 'block';
+        
+        if (filledCount < 4) {
+            messageDiv.textContent = 'Minimal 4 field informasi harus diisi';
+            messageDiv.className = 'error-msg';
+            
+            // Animasi shake jika error
+            form.style.animation = 'none';
+            form.offsetHeight; // trigger reflow
+            form.style.animation = 'shake 0.4s';
+        } else {
+            messageDiv.textContent = 'Data valid dan berhasil disimpan!';
+            messageDiv.className = 'success-msg';
+            console.log("Data siap dikirim ke server...");
+        }
+    });
+
+    // Tambahkan CSS shake animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+
+</body>
+</html>
