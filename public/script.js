@@ -659,6 +659,13 @@ document.addEventListener("click", () => {
 if (heroSearchBtn) {
   heroSearchBtn.removeEventListener("click", null); // Clear previous if any
   heroSearchBtn.addEventListener("click", () => {
+    // Search Restriction: Check if logged in
+    if (!isAdmin()) {
+      showLoginModal();
+      // Optional: highlight login button or show a toast/status
+      return;
+    }
+
     const query = heroSearchInput.value.trim();
     if (!query) return;
 
