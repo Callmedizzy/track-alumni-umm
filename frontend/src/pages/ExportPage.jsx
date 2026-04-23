@@ -26,21 +26,17 @@ export default function ExportPage() {
     setLoading(true)
     setExported(false)
     try {
-      const params = new URLSearchParams()
-      if (filters.fakultas) params.append('fakultas', filters.fakultas)
-      if (filters.prodi) params.append('prodi', filters.prodi)
-      if (filters.tahun) params.append('tahun', filters.tahun)
+      const params = {}
+      if (filters.fakultas) params.fakultas = filters.fakultas
+      if (filters.prodi) params.prodi = filters.prodi
+      if (filters.tahun) params.tahun = filters.tahun
 
-      const token = localStorage.getItem('access_token')
-      const url = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/export/excel?${params}`
-
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` }
+      const res = await api.get('/export/excel', {
+        params,
+        responseType: 'blob'
       })
 
-      if (!res.ok) throw new Error(await res.text())
-
-      const blob = await res.blob()
+      const blob = res.data
       const blobUrl = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = blobUrl

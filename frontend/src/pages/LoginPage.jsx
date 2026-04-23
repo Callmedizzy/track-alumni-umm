@@ -127,7 +127,7 @@ export default function LoginPage() {
             Pembaruan Data Diri
           </h1>
           <a
-            href="/public/form.html"
+            href="/form.html"
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               background: '#fff', color: '#1e40af',
@@ -191,7 +191,7 @@ export default function LoginPage() {
             <Search size={22} strokeWidth={2.5} />
           </button>
         </div>
-        <a href="#" style={{ marginTop: 10, color: '#3b82f6', fontSize: '0.88rem', fontWeight: 600, textDecoration: 'underline' }}>
+        <a href="/daftar.html" style={{ marginTop: 10, color: '#3b82f6', fontSize: '0.88rem', fontWeight: 600, textDecoration: 'underline' }}>
           Pencarian Spesifik
         </a>
       </div>
