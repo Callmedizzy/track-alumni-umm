@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { GraduationCap, Eye, EyeOff, Lock, User, AlertCircle, X, Search, ChevronDown } from 'lucide-react'
+import { GraduationCap, Eye, EyeOff, Lock, User, AlertCircle, X, Search, ChevronDown, Key } from 'lucide-react'
 
 export default function LoginPage() {
-  const { user, login, loading } = useAuth()
+  const { user, login, logout, loading } = useAuth()
   const navigate = useNavigate()
 
   const [form, setForm] = useState({ username: '', password: '' })
@@ -12,8 +12,9 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [errors, setErrors] = useState({})
   const [showModal, setShowModal] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
 
-  if (user?.role === 'admin') return <Navigate to="/dashboard" replace />
+  // if (user?.role === 'admin') return <Navigate to="/dashboard" replace />
 
   const validate = () => {
     const e = {}
@@ -88,27 +89,119 @@ export default function LoginPage() {
             <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#2e1065' }}>UMM Tracker</span>
           </div>
 
-          {/* Login Button */}
-          <button
-            id="open-login-btn"
-            onClick={() => setShowModal(true)}
-            style={{
-              background: '#4f46e5',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              padding: '8px 20px',
-              fontWeight: 600,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              transition: 'background 0.2s',
-            }}
-            onMouseEnter={e => e.target.style.background = '#4338ca'}
-            onMouseLeave={e => e.target.style.background = '#4f46e5'}
-          >
-            Login Admin
-          </button>
+          {/* Nav Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative' }}>
+            {user ? (
+              <>
+                {/* Profile Button (User Icon) */}
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    style={{
+                      width: 44, height: 44, borderRadius: 12,
+                      background: '#fff',
+                      color: '#000',
+                      border: '1px solid #e2e8f0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)' }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none' }}
+                  >
+                    <User size={20} fill="#000" />
+                  </button>
+
+                  {/* Dropdown Menu (Image 3 Style) */}
+                  {showUserMenu && (
+                    <div style={{
+                      position: 'absolute', top: 'calc(100% + 12px)', right: 0,
+                      width: 280,
+                      background: '#fff',
+                      borderRadius: 20,
+                      boxShadow: '0 10px 40px rgba(0,0,0,0.12)',
+                      border: '1px solid #f1f5f9',
+                      padding: '24px',
+                      zIndex: 100,
+                      animation: 'slideIn 0.2s ease-out'
+                    }}>
+                      <style>{`@keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
+                      
+                      {/* User Info Header */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
+                        <div style={{
+                          width: 48, height: 48, borderRadius: '50%',
+                          background: '#f1f5f9', overflow: 'hidden',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}>
+                          <User size={24} color="#94a3b8" />
+                        </div>
+                        <div style={{ overflow: 'hidden' }}>
+                          <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {user.username}
+                          </h4>
+                          <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b' }}>
+                            {user.username.toLowerCase()}@alumni.umm.ac.id
+                          </p>
+                        </div>
+                      </div>
+
+                      <div style={{ height: '1px', background: '#f1f5f9', margin: '0 -24px 20px' }} />
+
+                      {/* Menu Links */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {user.role === 'admin' && (
+                          <button
+                            onClick={() => { navigate('/dashboard'); setShowUserMenu(false) }}
+                            style={{
+                              background: 'none', border: 'none', textAlign: 'left',
+                              fontSize: '1rem', fontWeight: 600, color: '#3b82f6',
+                              padding: '8px 0', cursor: 'pointer', fontFamily: 'inherit'
+                            }}
+                          >
+                            Dashboard
+                          </button>
+                        )}
+                        
+                        <div style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748b', padding: '4px 0' }}>
+                          Status: {user.role === 'admin' ? 'Administrator' : 'User'}
+                        </div>
+
+                        <button
+                          onClick={() => { logout(); setShowUserMenu(false); navigate('/login') }}
+                          style={{
+                            background: 'none', border: 'none', textAlign: 'left',
+                            fontSize: '1rem', fontWeight: 600, color: '#ef4444',
+                            padding: '8px 0', cursor: 'pointer', fontFamily: 'inherit'
+                          }}
+                        >
+                          Keluar
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <button
+                onClick={() => setShowModal(true)}
+                title="Login Admin"
+                style={{
+                  width: 44, height: 44, borderRadius: 12,
+                  background: '#fff',
+                  color: '#000',
+                  border: '1px solid #e2e8f0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)' }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none' }}
+              >
+                <User size={20} />
+              </button>
+            )}
+          </div>
         </div>
       </nav>
 

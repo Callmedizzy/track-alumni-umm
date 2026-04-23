@@ -3,11 +3,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import {
   LayoutDashboard, Users, Download, ScrollText,
-  LogOut, Menu, GraduationCap, Search
+  LogOut, Menu, GraduationCap, Search, Home
 } from 'lucide-react'
 import clsx from 'clsx'
 
 const navItems = [
+  { label: 'Beranda', href: '/login', icon: Home },
   { label: 'Statistik', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Pelacakan Alumni', href: '/alumni', icon: Search },
   { label: 'Export Data', href: '/export', icon: Download, adminOnly: true },
