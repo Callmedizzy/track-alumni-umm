@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Program Studi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f1f0f6;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #3f3f46;
+      --border: #d9c7ff;
+      --accent: #4f46e5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Outfit", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1240px;
+      margin: 22px auto 30px;
+      padding: 0 16px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.25rem, 2vw, 1.6rem);
+      letter-spacing: 0.2px;
+    }
+
+    .back-link {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+      border: 1px solid rgba(79, 70, 229, 0.28);
+      border-radius: 10px;
+      padding: 9px 14px;
+      background: #fff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(315px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: 0 3px 12px rgba(131, 85, 228, 0.08);
+      padding: 14px;
+    }
+
+    .head {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      background: #f4eff9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 33px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .meta {
+      margin: 6px 0 0;
+      font-size: 22px;
+      color: var(--muted);
+      font-weight: 500;
+      line-height: 1.18;
+    }
+
+    .btn {
+      margin-top: 14px;
+      width: 100%;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--accent);
+      background: #fff;
+      color: var(--accent);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    @media (max-width: 900px) {
+      .title { font-size: 30px; }
+      .meta { font-size: 19px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Daftar Program Studi</h1>
+      <a class="back-link" href="/login">Kembali</a>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1F496;</div>
+          <div>
+            <h2 class="title">Agama</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 1.009.969</p>
+            <p class="meta">Persentase Lulusan: 47,50%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1FA99;</div>
+          <div>
+            <h2 class="title">Ekonomi</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 8.908.902</p>
+            <p class="meta">Persentase Lulusan: 52,88%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1F39F;</div>
+          <div>
+            <h2 class="title">Humaniora</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 967.246</p>
+            <p class="meta">Persentase Lulusan: 52,96%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1FA7A;</div>
+          <div>
+            <h2 class="title">Kesehatan</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 5.149.315</p>
+            <p class="meta">Persentase Lulusan: 69,60%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1F52D;</div>
+          <div>
+            <h2 class="title">MIPA</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 1.335.775</p>
+            <p class="meta">Persentase Lulusan: 61,15%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x270F;</div>
+          <div>
+            <h2 class="title">Pendidikan</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 12.188.570</p>
+            <p class="meta">Persentase Lulusan: 60,78%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1F331;</div>
+          <div>
+            <h2 class="title">Pertanian</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 1.948.590</p>
+            <p class="meta">Persentase Lulusan: 53,69%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1F3A8;</div>
+          <div>
+            <h2 class="title">Seni</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 411.458</p>
+            <p class="meta">Persentase Lulusan: 47,14%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1F465;</div>
+          <div>
+            <h2 class="title">Sosial</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 7.601.778</p>
+            <p class="meta">Persentase Lulusan: 48,64%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <div class="icon">&#x1F6E0;</div>
+          <div>
+            <h2 class="title">Teknik</h2>
+            <p class="meta">Total Lulusan Mahasiswa: 7.990.889</p>
+            <p class="meta">Persentase Lulusan: 50,98%</p>
+          </div>
+        </div>
+        <button class="btn" type="button">Lihat Program Studi</button>
+      </article>
+    </div>
+  </div>
+</body>
+</html>

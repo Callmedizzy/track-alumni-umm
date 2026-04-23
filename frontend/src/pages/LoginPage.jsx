@@ -12,7 +12,6 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [errors, setErrors] = useState({})
   const [showModal, setShowModal] = useState(false)
-  const [showProgramStudiList, setShowProgramStudiList] = useState(false)
 
   if (user?.role === 'admin') return <Navigate to="/dashboard" replace />
 
@@ -38,33 +37,18 @@ export default function LoginPage() {
   }
 
   const menuItemsData = [
-    { id: 'program-studi', icon: '📘', label: 'Program Studi' },
-    { id: 'perguruan-tinggi', icon: '🏢', label: 'Perguruan Tinggi' },
-    { id: 'statistik', icon: '📊', label: 'Statistik' },
-    { id: 'publikasi', icon: '📚', label: 'Publikasi' },
-    { id: 'pengumuman', icon: '📢', label: 'Pengumuman' },
-    { id: 'peta-alumni', icon: '🗺️', label: 'Peta Alumni' },
-  ]
-
-  const programStudiCards = [
-    { icon: '💖', title: 'Agama', total: '1.009.969', persentase: '47,50%' },
-    { icon: '🪙', title: 'Ekonomi', total: '8.908.902', persentase: '52,88%' },
-    { icon: '🎟️', title: 'Humaniora', total: '967.246', persentase: '52,96%' },
-    { icon: '🩺', title: 'Kesehatan', total: '5.149.315', persentase: '69,60%' },
-    { icon: '🔭', title: 'MIPA', total: '1.335.775', persentase: '61,15%' },
-    { icon: '✏️', title: 'Pendidikan', total: '12.188.570', persentase: '60,78%' },
-    { icon: '🌱', title: 'Pertanian', total: '1.948.590', persentase: '53,69%' },
-    { icon: '🎨', title: 'Seni', total: '411.458', persentase: '47,14%' },
-    { icon: '👥', title: 'Sosial', total: '7.601.778', persentase: '48,64%' },
-    { icon: '🛠️', title: 'Teknik', total: '7.990.889', persentase: '50,98%' },
+    { id: 'program-studi', icon: '\u{1F4D8}', label: 'Program Studi' },
+    { id: 'perguruan-tinggi', icon: '\u{1F3E2}', label: 'Perguruan Tinggi' },
+    { id: 'statistik', icon: '\u{1F4CA}', label: 'Statistik' },
+    { id: 'publikasi', icon: '\u{1F4DA}', label: 'Publikasi' },
+    { id: 'pengumuman', icon: '\u{1F4E2}', label: 'Pengumuman' },
+    { id: 'peta-alumni', icon: '\u{1F5FA}\u{FE0F}', label: 'Peta Alumni' },
   ]
 
   const handleMenuClick = (itemId) => {
     if (itemId === 'program-studi') {
-      setShowProgramStudiList(true)
-      return
+      window.location.href = '/program-studi.html'
     }
-    setShowProgramStudiList(false)
   }
 
   return (
@@ -220,9 +204,7 @@ export default function LoginPage() {
               padding: '28px 16px',
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-              border: showProgramStudiList && item.id === 'program-studi'
-                ? '1px solid rgba(79,70,229,0.45)'
-                : '1px solid rgba(0,0,0,0.04)',
+              border: '1px solid rgba(0,0,0,0.04)',
               cursor: 'pointer',
               transition: 'transform 0.2s, box-shadow 0.2s',
             }}
@@ -235,79 +217,6 @@ export default function LoginPage() {
           </div>
         ))}
       </div>
-
-      {showProgramStudiList && (
-        <div style={{
-          width: '100%',
-          maxWidth: 1220,
-          margin: '18px auto 28px',
-          padding: '0 2%',
-        }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: 14,
-          }}>
-            {programStudiCards.map((item) => (
-              <div
-                key={item.title}
-                style={{
-                  background: '#fff',
-                  borderRadius: 18,
-                  border: '1px solid rgba(139,92,246,0.2)',
-                  boxShadow: '0 4px 14px rgba(139,92,246,0.08)',
-                  padding: '14px',
-                }}
-              >
-                <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                  <div style={{
-                    width: 72,
-                    height: 72,
-                    borderRadius: 12,
-                    background: '#f3f0f7',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '2rem',
-                    flexShrink: 0,
-                  }}>
-                    {item.icon}
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <h3 style={{ margin: 0, fontSize: '2rem', color: '#0f172a', fontWeight: 800 }}>
-                      {item.title}
-                    </h3>
-                    <p style={{ margin: '4px 0 0', fontSize: '1.25rem', color: '#0f172a', fontWeight: 500 }}>
-                      Total Lulusan Mahasiswa: {item.total}
-                    </p>
-                    <p style={{ margin: '2px 0 0', fontSize: '1.25rem', color: '#0f172a', fontWeight: 500 }}>
-                      Persentase Lulusan: {item.persentase}
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  style={{
-                    marginTop: 14,
-                    width: '100%',
-                    height: 42,
-                    borderRadius: 12,
-                    border: '1px solid #4f46e5',
-                    background: '#fff',
-                    color: '#4f46e5',
-                    fontWeight: 500,
-                    fontSize: '1rem',
-                    fontFamily: 'inherit',
-                  }}
-                >
-                  Lihat Program Studi
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* ===== FOOTER ===== */}
       <footer style={{
@@ -478,4 +387,3 @@ export default function LoginPage() {
     </div>
   )
 }
-
