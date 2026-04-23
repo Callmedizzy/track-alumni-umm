@@ -88,15 +88,47 @@
     }
 
     .breadcrumb {
-      margin: 0;
+      margin: 0 0 4px;
       font-size: 15px;
       color: #334155;
       font-weight: 500;
     }
 
-    .breadcrumb span {
-      color: #0f172a;
-      font-weight: 700;
+    .hero-banner {
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      border-radius: 16px;
+      padding: 32px 40px;
+      color: white;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1.2;
     }
 
     .dark-card {
@@ -202,14 +234,15 @@
 
     .y-label {
       position: absolute;
-      left: 10px;
+      left: 14px;
       top: 50%;
-      transform: translateY(-50%) rotate(-90deg);
-      transform-origin: left top;
-      font-size: 24px;
-      color: #111827;
-      font-weight: 500;
+      transform: translateY(-50%) rotate(-180deg);
+      writing-mode: vertical-rl;
+      font-size: 20px;
+      color: #1e293b;
+      font-weight: 600;
       white-space: nowrap;
+      text-align: center;
     }
 
     .bars {
@@ -227,11 +260,13 @@
     }
 
     .bar-col {
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: end;
-      gap: 6px;
+      justify-content: flex-end;
+      gap: 8px;
+      position: relative;
     }
 
     .bar-value {
@@ -250,14 +285,13 @@
     }
 
     .bar-label {
-      font-size: 20px;
-      color: #1f2937;
+      font-size: 18px;
+      font-weight: 600;
+      color: #334155;
       text-align: center;
       line-height: 1.2;
-      min-height: 46px;
-      display: flex;
-      align-items: start;
-      justify-content: center;
+      margin-top: 4px;
+      white-space: nowrap;
     }
 
     .x-label {
@@ -303,6 +337,11 @@
 
   <main class="wrap">
     <p class="breadcrumb">Beranda &gt; <span>Statistik</span></p>
+
+    <div class="hero-banner">
+      <p class="hero-sub">Yuk cari tau tentang</p>
+      <h1 class="hero-title">Statistik Alumni Universitas Muhammadiyah Malang</h1>
+    </div>
 
     <section class="dark-card" aria-label="Distribusi Fakultas">
       <h1 class="dark-title">Distribusi Per Fakultas</h1>
