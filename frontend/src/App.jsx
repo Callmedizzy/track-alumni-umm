@@ -19,15 +19,15 @@ export default function App() {
             {/* Public */}
             <Route path="/login" element={<LoginPage />} />
 
-            {/* Protected */}
+            {/* Protected - Restricted to Admin only as requested */}
             <Route path="/dashboard" element={
-              <ProtectedRoute>
+              <ProtectedRoute adminOnly>
                 <Layout><DashboardPage /></Layout>
               </ProtectedRoute>
             } />
 
             <Route path="/alumni" element={
-              <ProtectedRoute>
+              <ProtectedRoute adminOnly>
                 <Layout><AlumniPage /></Layout>
               </ProtectedRoute>
             } />
@@ -44,9 +44,9 @@ export default function App() {
               </ProtectedRoute>
             } />
 
-            {/* Redirect */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            {/* Redirect to login if not authenticated or not admin */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </ToastProvider>
       </AuthProvider>
