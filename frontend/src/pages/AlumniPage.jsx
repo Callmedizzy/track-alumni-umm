@@ -1,0 +1,350 @@
+import React, { useEffect, useState, useCallback } from 'react'
+import { Search, Filter, Edit2, ChevronLeft, ChevronRight, CheckCircle, XCircle, X } from 'lucide-react'
+import api from '../lib/api'
+import { useAuth } from '../contexts/AuthContext'
+import { useToast } from '../contexts/ToastContext'
+import EditAlumniModal from '../components/EditAlumniModal'
+import clsx from 'clsx'
+
+const FAKULTAS_OPTIONS = [
+  'Fakultas Keguruan dan Ilmu Pendidikan',
+  'Fakultas Kedokteran',
+  'Fakultas Teknik',
+  'Fakultas Ekonomi dan Bisnis',
+  'Fakultas Ilmu Sosial dan Ilmu Politik',
+  'Fakultas Hukum',
+  'Fakultas Pertanian dan Peternakan',
+  'Fakultas Psikologi',
+  'Fakultas Ilmu Kesehatan',
+  'Fakultas Agama Islam',
+]
+
+export default function AlumniPage() {
+  const { isAdmin } = useAuth()
+  const { toast } = useToast()
+
+  const [data, setData] = useState([])
+  const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
+
+  const [filters, setFilters] = useState({
+    search: '', fakultas: '', prodi: '', tahun: '', has_contact: '', has_career: ''
+  })
+  const [appliedFilters, setAppliedFilters] = useState({ ...filters })
+  const [showFilters, setShowFilters] = useState(false)
+
+  const [editTarget, setEditTarget] = useState(null) // { nim, nama }
+
+  const fetchAlumni = useCallback(async () => {
+    setLoading(true)
+    try {
+      const params = { page, limit: 50 }
+      if (appliedFilters.search) params.search = appliedFilters.search
+      if (appliedFilters.fakultas) params.fakultas = appliedFilters.fakultas
+      if (appliedFilters.prodi) params.prodi = appliedFilters.prodi
+      if (appliedFilters.tahun) params.tahun = appliedFilters.tahun
+      if (appliedFilters.has_contact !== '') params.has_contact = appliedFilters.has_contact === 'true'
+      if (appliedFilters.has_career !== '') params.has_career = appliedFilters.has_career === 'true'
+
+      const { data: res } = await api.get('/alumni', { params })
+      setData(res.data)
+      setTotal(res.total)
+      setTotalPages(res.total_pages)
+    } catch {
+      toast({ message: 'Gagal memuat data alumni', type: 'error' })
+    } finally {
+      setLoading(false)
+    }
+  }, [page, appliedFilters])
+
+  useEffect(() => { fetchAlumni() }, [fetchAlumni])
+
+  const applyFilters = () => {
+    setAppliedFilters({ ...filters })
+    setPage(1)
+    setShowFilters(false)
+  }
+
+  const resetFilters = () => {
+    const empty = { search: '', fakultas: '', prodi: '', tahun: '', has_contact: '', has_career: '' }
+    setFilters(empty)
+    setAppliedFilters(empty)
+    setPage(1)
+  }
+
+  const activeFilterCount = Object.values(appliedFilters).filter(Boolean).length
+
+  const formatDate = (d) => d ? new Date(d).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '—'
+
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100">Data Alumni</h1>
+          <p className="text-slate-400 text-sm mt-0.5">
+            {total.toLocaleString('id-ID')} alumni ditemukan
+          </p>
+        </div>
+      </div>
+
+      {/* Search + filter bar */}
+      <div className="card p-4">
+        <div className="flex gap-3 flex-wrap">
+          {/* Search */}
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <input
+              id="alumni-search-input"
+              type="text"
+              className="input pl-9"
+              placeholder="Cari nama atau NIM..."
+              value={filters.search}
+              onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
+              onKeyDown={e => e.key === 'Enter' && applyFilters()}
+            />
+          </div>
+
+          <button
+            id="alumni-filter-btn"
+            onClick={() => setShowFilters(s => !s)}
+            className={clsx('btn-secondary relative', activeFilterCount > 0 && 'border-primary-600 text-primary-400')}
+          >
+            <Filter className="w-4 h-4" />
+            Filter
+            {activeFilterCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary-600 rounded-full text-xs flex items-center justify-center text-white font-bold">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+
+          <button id="alumni-search-btn" onClick={applyFilters} className="btn-primary">
+            <Search className="w-4 h-4" />
+            Cari
+          </button>
+
+          {activeFilterCount > 0 && (
+            <button onClick={resetFilters} className="btn-secondary text-red-400">
+              <X className="w-4 h-4" />
+              Reset
+            </button>
+          )}
+        </div>
+
+        {/* Filter panel */}
+        {showFilters && (
+          <div className="mt-4 pt-4 border-t border-surface-border grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
+            <div>
+              <label className="label">Fakultas</label>
+              <select
+                id="filter-fakultas"
+                className="input"
+                value={filters.fakultas}
+                onChange={e => setFilters(f => ({ ...f, fakultas: e.target.value }))}
+              >
+                <option value="">Semua Fakultas</option>
+                {FAKULTAS_OPTIONS.map(f => <option key={f}>{f}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label className="label">Program Studi</label>
+              <input
+                id="filter-prodi"
+                type="text"
+                className="input"
+                placeholder="Contoh: Teknik Informatika"
+                value={filters.prodi}
+                onChange={e => setFilters(f => ({ ...f, prodi: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className="label">Tahun Lulus</label>
+              <input
+                id="filter-tahun"
+                type="number"
+                className="input"
+                placeholder="Contoh: 2020"
+                min={2000} max={2025}
+                value={filters.tahun}
+                onChange={e => setFilters(f => ({ ...f, tahun: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className="label">Status Kontak</label>
+              <select
+                id="filter-has-contact"
+                className="input"
+                value={filters.has_contact}
+                onChange={e => setFilters(f => ({ ...f, has_contact: e.target.value }))}
+              >
+                <option value="">Semua</option>
+                <option value="true">Sudah terisi</option>
+                <option value="false">Belum terisi</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="label">Status Karier</label>
+              <select
+                id="filter-has-career"
+                className="input"
+                value={filters.has_career}
+                onChange={e => setFilters(f => ({ ...f, has_career: e.target.value }))}
+              >
+                <option value="">Semua</option>
+                <option value="true">Sudah terisi</option>
+                <option value="false">Belum terisi</option>
+              </select>
+            </div>
+
+            <div className="flex items-end">
+              <button onClick={applyFilters} className="btn-primary w-full justify-center">
+                Terapkan Filter
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Table */}
+      <div className="card p-0 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-surface-border bg-surface/50">
+                <th className="table-head">Nama</th>
+                <th className="table-head">NIM</th>
+                <th className="table-head">Prodi</th>
+                <th className="table-head">Fakultas</th>
+                <th className="table-head">Tgl. Lulus</th>
+                <th className="table-head text-center">Kontak</th>
+                <th className="table-head text-center">Karier</th>
+                {isAdmin && <th className="table-head text-center">Aksi</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                [...Array(8)].map((_, i) => (
+                  <tr key={i} className="border-b border-surface-border/50">
+                    {[...Array(isAdmin ? 8 : 7)].map((_, j) => (
+                      <td key={j} className="table-cell">
+                        <div className="h-4 bg-surface-border rounded animate-pulse" style={{ width: `${60 + (j * 17) % 40}%` }} />
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : data.length === 0 ? (
+                <tr>
+                  <td colSpan={isAdmin ? 8 : 7} className="py-16 text-center text-slate-500">
+                    <Search className="w-8 h-8 mx-auto mb-3 opacity-40" />
+                    <p>Tidak ada alumni yang ditemukan</p>
+                    <p className="text-xs mt-1">Coba ubah filter atau kata kunci pencarian</p>
+                  </td>
+                </tr>
+              ) : (
+                data.map((alumni) => (
+                  <tr
+                    key={alumni.nim}
+                    className="border-b border-surface-border/50 hover:bg-surface/50 transition-colors"
+                  >
+                    <td className="table-cell font-medium text-slate-200 max-w-[200px] truncate">
+                      {alumni.nama}
+                    </td>
+                    <td className="table-cell font-mono text-xs text-slate-400">{alumni.nim}</td>
+                    <td className="table-cell max-w-[150px] truncate">{alumni.prodi || '—'}</td>
+                    <td className="table-cell max-w-[160px] truncate text-xs">{alumni.fakultas || '—'}</td>
+                    <td className="table-cell">{formatDate(alumni.tgl_lulus)}</td>
+                    <td className="table-cell text-center">
+                      {alumni.has_contact
+                        ? <CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" />
+                        : <XCircle className="w-4 h-4 text-slate-600 mx-auto" />
+                      }
+                    </td>
+                    <td className="table-cell text-center">
+                      {alumni.has_career
+                        ? <CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" />
+                        : <XCircle className="w-4 h-4 text-slate-600 mx-auto" />
+                      }
+                    </td>
+                    {isAdmin && (
+                      <td className="table-cell text-center">
+                        <button
+                          id={`edit-btn-${alumni.nim}`}
+                          onClick={() => setEditTarget({ nim: alumni.nim, nama: alumni.nama })}
+                          className="btn-secondary py-1 px-2.5 text-xs"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                          Edit
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-surface-border">
+            <p className="text-sm text-slate-500">
+              Halaman <span className="text-slate-300 font-medium">{page}</span> dari{' '}
+              <span className="text-slate-300 font-medium">{totalPages}</span>
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                id="pagination-prev-btn"
+                disabled={page <= 1}
+                onClick={() => setPage(p => p - 1)}
+                className="btn-secondary py-1.5 px-2.5 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              {/* Page numbers */}
+              {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                const p = Math.max(1, Math.min(totalPages - 4, page - 2)) + i
+                return (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={clsx(
+                      'w-8 h-8 rounded-lg text-sm font-medium transition-colors',
+                      p === page ? 'bg-primary-600 text-white' : 'text-slate-400 hover:bg-surface-border'
+                    )}
+                  >
+                    {p}
+                  </button>
+                )
+              })}
+              <button
+                id="pagination-next-btn"
+                disabled={page >= totalPages}
+                onClick={() => setPage(p => p + 1)}
+                className="btn-secondary py-1.5 px-2.5 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Edit Modal */}
+      {editTarget && (
+        <EditAlumniModal
+          nim={editTarget.nim}
+          nama={editTarget.nama}
+          onClose={() => setEditTarget(null)}
+          onSaved={() => { fetchAlumni(); setEditTarget(null) }}
+        />
+      )}
+    </div>
+  )
+}
