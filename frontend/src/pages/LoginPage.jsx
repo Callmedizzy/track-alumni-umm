@@ -136,7 +136,7 @@ export default function LoginPage() {
             marginBottom: 28, letterSpacing: '-1px',
             textShadow: '0 4px 15px rgba(0,0,0,0.1)',
           }}>
-            Pembaruan Data Diri
+            Pelacakan Mahasiswa
           </h1>
         </div>
       </div>
