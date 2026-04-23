@@ -38,3 +38,4 @@ Thumbs.db
 # ─── Data files (besar) ──────────────────────────
 data/alumni.json
 *.xlsx
+!backend/alumni_dev.db
