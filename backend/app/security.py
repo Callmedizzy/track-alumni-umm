@@ -64,6 +64,25 @@ def get_current_user(
     return user
 
 
+def get_current_user_optional(
+    request: Request,
+    db: Session = Depends(get_db),
+) -> Optional[User]:
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return None
+    
+    token = auth_header.split(" ")[1]
+    try:
+        payload = decode_token(token)
+        username: str = payload.get("sub")
+        if not username:
+            return None
+        return db.query(User).filter(User.username == username).first()
+    except:
+        return None
+
+
 def require_admin(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role != UserRole.admin:
         raise HTTPException(status_code=403, detail="Akses ditolak. Hanya admin.")

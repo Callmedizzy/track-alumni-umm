@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react'
 import api from '../lib/api'
 
 const AuthContext = createContext(null)
-const ADMIN_ONLY_ERROR = 'Akun viewer tidak memiliki akses ke dashboard admin.'
+const ADMIN_ONLY_ERROR = 'Akun user tidak memiliki akses ke dashboard admin.'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -11,37 +11,32 @@ export function AuthProvider({ children }) {
       if (!stored) return null
 
       const parsed = JSON.parse(stored)
-      if (parsed?.role === 'admin') return parsed
-
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('user')
-      return null
+      // Any visitor is technically a user, but if they have a token, we parse it.
+      // If role is missing or not admin, we still treat them as 'user'
+      return parsed
     } catch {
       return null
     }
   })
-  const [loading, setLoading] = useState(false)
 
   const login = async (username, password) => {
-    setLoading(true)
     try {
-      const { data } = await api.post('/auth/login', { username, password })
-      if (data.role !== 'admin') {
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('user')
-        setUser(null)
-        return { success: false, error: ADMIN_ONLY_ERROR }
-      }
+      const formData = new FormData()
+      formData.append('username', username)
+      formData.append('password', password)
 
+      const { data } = await api.post('/auth/login', formData)
+      
+      // If login successful, we store everything
       localStorage.setItem('access_token', data.access_token)
-      localStorage.setItem('user', JSON.stringify({ username: data.username, role: data.role }))
-      setUser({ username: data.username, role: data.role })
+      localStorage.setItem('user', JSON.stringify(data.user))
+      setUser(data.user)
       return { success: true }
     } catch (err) {
-      const msg = err.response?.data?.detail || 'Login gagal. Periksa username dan password.'
-      return { success: false, error: msg }
-    } finally {
-      setLoading(false)
+      return { 
+        success: false, 
+        error: err.response?.data?.detail || 'Gagal login. Periksa username dan password.' 
+      }
     }
   }
 
@@ -54,7 +49,13 @@ export function AuthProvider({ children }) {
   const isAdmin = user?.role === 'admin'
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, isAdmin }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      login, 
+      logout, 
+      isAdmin,
+      loading: false 
+    }}>
       {children}
     </AuthContext.Provider>
   )

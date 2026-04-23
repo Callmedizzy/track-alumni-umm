@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Search, Filter, Edit2, ChevronLeft, ChevronRight, CheckCircle, XCircle, X } from 'lucide-react'
 import api from '../lib/api'
 import { useAuth } from '../contexts/AuthContext'
@@ -22,6 +23,7 @@ const FAKULTAS_OPTIONS = [
 export default function AlumniPage() {
   const { isAdmin } = useAuth()
   const { toast } = useToast()
+  const [searchParams] = useSearchParams()
 
   const [data, setData] = useState([])
   const [total, setTotal] = useState(0)
@@ -30,7 +32,9 @@ export default function AlumniPage() {
   const [loading, setLoading] = useState(false)
 
   const [filters, setFilters] = useState({
-    search: '', fakultas: '', prodi: '', tahun: '', has_contact: '', has_career: ''
+    search: searchParams.get('search') || '',
+    category: searchParams.get('category') || '',
+    fakultas: '', prodi: '', tahun: '', has_contact: '', has_career: ''
   })
   const [appliedFilters, setAppliedFilters] = useState({ ...filters })
   const [showFilters, setShowFilters] = useState(false)
@@ -42,6 +46,7 @@ export default function AlumniPage() {
     try {
       const params = { page, limit: 50 }
       if (appliedFilters.search) params.search = appliedFilters.search
+      if (appliedFilters.category) params.category = appliedFilters.category
       if (appliedFilters.fakultas) params.fakultas = appliedFilters.fakultas
       if (appliedFilters.prodi) params.prodi = appliedFilters.prodi
       if (appliedFilters.tahun) params.tahun = appliedFilters.tahun
@@ -68,7 +73,7 @@ export default function AlumniPage() {
   }
 
   const resetFilters = () => {
-    const empty = { search: '', fakultas: '', prodi: '', tahun: '', has_contact: '', has_career: '' }
+    const empty = { search: '', category: '', fakultas: '', prodi: '', tahun: '', has_contact: '', has_career: '' }
     setFilters(empty)
     setAppliedFilters(empty)
     setPage(1)
@@ -218,13 +223,16 @@ export default function AlumniPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-surface-border bg-surface/50">
-                <th className="table-head">Nama</th>
+                <th className="table-head">Nama Lulusan</th>
                 <th className="table-head">NIM</th>
-                <th className="table-head">Prodi</th>
+                <th className="table-head">Tahun Masuk</th>
+                <th className="table-head">Tanggal Lulus</th>
                 <th className="table-head">Fakultas</th>
-                <th className="table-head">Tgl. Lulus</th>
-                <th className="table-head text-center">Kontak</th>
-                <th className="table-head text-center">Karier</th>
+                <th className="table-head">Program Studi</th>
+                <th className="table-head">Pekerjaan</th>
+                <th className="table-head">Perusahaan</th>
+                <th className="table-head">Lokasi</th>
+                <th className="table-head">Status</th>
                 {isAdmin && <th className="table-head text-center">Aksi</th>}
               </tr>
             </thead>
@@ -232,7 +240,7 @@ export default function AlumniPage() {
               {loading ? (
                 [...Array(8)].map((_, i) => (
                   <tr key={i} className="border-b border-surface-border/50">
-                    {[...Array(isAdmin ? 8 : 7)].map((_, j) => (
+                    {[...Array(isAdmin ? 11 : 10)].map((_, j) => (
                       <td key={j} className="table-cell">
                         <div className="h-4 bg-surface-border rounded animate-pulse" style={{ width: `${60 + (j * 17) % 40}%` }} />
                       </td>
@@ -241,7 +249,7 @@ export default function AlumniPage() {
                 ))
               ) : data.length === 0 ? (
                 <tr>
-                  <td colSpan={isAdmin ? 8 : 7} className="py-16 text-center text-slate-500">
+                  <td colSpan={isAdmin ? 11 : 10} className="py-16 text-center text-slate-500">
                     <Search className="w-8 h-8 mx-auto mb-3 opacity-40" />
                     <p>Tidak ada alumni yang ditemukan</p>
                     <p className="text-xs mt-1">Coba ubah filter atau kata kunci pencarian</p>
@@ -253,25 +261,18 @@ export default function AlumniPage() {
                     key={alumni.nim}
                     className="border-b border-surface-border/50 hover:bg-surface/50 transition-colors"
                   >
-                    <td className="table-cell font-medium text-slate-200 max-w-[200px] truncate">
+                    <td className="table-cell font-medium text-slate-200 max-w-[180px] truncate">
                       {alumni.nama}
                     </td>
                     <td className="table-cell font-mono text-xs text-slate-400">{alumni.nim}</td>
-                    <td className="table-cell max-w-[150px] truncate">{alumni.prodi || '—'}</td>
-                    <td className="table-cell max-w-[160px] truncate text-xs">{alumni.fakultas || '—'}</td>
+                    <td className="table-cell text-center">{alumni.tahun_masuk || '—'}</td>
                     <td className="table-cell">{formatDate(alumni.tgl_lulus)}</td>
-                    <td className="table-cell text-center">
-                      {alumni.has_contact
-                        ? <CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" />
-                        : <XCircle className="w-4 h-4 text-slate-600 mx-auto" />
-                      }
-                    </td>
-                    <td className="table-cell text-center">
-                      {alumni.has_career
-                        ? <CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" />
-                        : <XCircle className="w-4 h-4 text-slate-600 mx-auto" />
-                      }
-                    </td>
+                    <td className="table-cell max-w-[150px] truncate text-xs">{alumni.fakultas || '—'}</td>
+                    <td className="table-cell max-w-[140px] truncate">{alumni.prodi || '—'}</td>
+                    <td className="table-cell max-w-[140px] truncate text-xs">{alumni.posisi || '—'}</td>
+                    <td className="table-cell max-w-[140px] truncate text-xs">{alumni.tempat_kerja || '—'}</td>
+                    <td className="table-cell max-w-[140px] truncate text-xs">{alumni.alamat_kerja || '—'}</td>
+                    <td className="table-cell text-xs">{alumni.status_kerja || '—'}</td>
                     {isAdmin && (
                       <td className="table-cell text-center">
                         <button

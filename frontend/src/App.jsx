@@ -27,9 +27,7 @@ export default function App() {
             } />
 
             <Route path="/alumni" element={
-              <ProtectedRoute adminOnly>
-                <Layout><AlumniPage /></Layout>
-              </ProtectedRoute>
+              <Layout><AlumniPage /></Layout>
             } />
 
             <Route path="/export" element={

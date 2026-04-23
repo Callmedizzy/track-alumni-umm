@@ -15,7 +15,7 @@ from app.schemas import (
     PaginatedAlumni,
     DashboardStats,
 )
-from app.security import get_current_user, log_action
+from app.security import get_current_user, get_current_user_optional, log_action
 
 router = APIRouter(prefix="/alumni", tags=["Alumni"])
 
@@ -25,7 +25,8 @@ router = APIRouter(prefix="/alumni", tags=["Alumni"])
 @router.get("", response_model=PaginatedAlumni)
 def list_alumni(
     request: Request,
-    search: Optional[str] = Query(None, description="Search by nama atau NIM"),
+    search: Optional[str] = Query(None, description="Search keyword"),
+    category: Optional[str] = Query(None, description="nama, nim, prodi, fakultas"),
     fakultas: Optional[str] = Query(None),
     prodi: Optional[str] = Query(None),
     tahun: Optional[int] = Query(None, description="Tahun lulus (extract dari tgl_lulus)"),
@@ -34,7 +35,7 @@ def list_alumni(
     page: int = Query(1, ge=1),
     limit: int = Query(50, ge=1, le=200),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_current_user_optional),
 ):
     query = db.query(AlumniBase).options(
         joinedload(AlumniBase.contact),
@@ -42,24 +43,37 @@ def list_alumni(
     )
 
     if search:
-        query = query.filter(
-            or_(
-                AlumniBase.nama.ilike(f"%{search}%"),
-                AlumniBase.nim.ilike(f"%{search}%"),
+        if category == "nama":
+            query = query.filter(AlumniBase.nama.ilike(f"%{search}%"))
+        elif category == "nim":
+            query = query.filter(AlumniBase.nim.ilike(f"%{search}%"))
+        elif category == "prodi":
+            query = query.filter(AlumniBase.prodi.ilike(f"%{search}%"))
+        elif category == "fakultas":
+            query = query.filter(AlumniBase.fakultas.ilike(f"%{search}%"))
+        else:
+            # Default: Nama or NIM
+            query = query.filter(
+                or_(
+                    AlumniBase.nama.ilike(f"%{search}%"),
+                    AlumniBase.nim.ilike(f"%{search}%"),
+                )
             )
-        )
+
     if fakultas:
         query = query.filter(AlumniBase.fakultas.ilike(f"%{fakultas}%"))
     if prodi:
         query = query.filter(AlumniBase.prodi.ilike(f"%{prodi}%"))
     if tahun:
         query = query.filter(func.extract("year", AlumniBase.tgl_lulus) == tahun)
+    
     if has_contact is True:
         query = query.join(AlumniContact, AlumniBase.nim == AlumniContact.nim)
     elif has_contact is False:
         query = query.outerjoin(AlumniContact, AlumniBase.nim == AlumniContact.nim).filter(
             AlumniContact.nim == None
         )
+    
     if has_career is True:
         query = query.join(AlumniCareer, AlumniBase.nim == AlumniCareer.nim)
     elif has_career is False:
@@ -79,17 +93,22 @@ def list_alumni(
                 id=r.id,
                 nama=r.nama,
                 nim=r.nim,
+                tahun_masuk=r.tahun_masuk,
                 prodi=r.prodi,
                 fakultas=r.fakultas,
                 tgl_lulus=r.tgl_lulus,
                 has_contact=r.contact is not None,
                 has_career=r.career is not None,
+                tempat_kerja=r.career.tempat_kerja if r.career else None,
+                posisi=r.career.posisi if r.career else None,
+                alamat_kerja=r.career.alamat_kerja if r.career else None,
+                status_kerja=r.career.status_kerja if r.career else None,
             )
         )
 
     log_action(
         db, current_user, "VIEW_LIST", "/alumni",
-        detail=f"search={search} fakultas={fakultas} prodi={prodi} tahun={tahun} page={page}",
+        detail=f"search={search} category={category} fakultas={fakultas} prodi={prodi} page={page}",
         ip_address=request.client.host if request.client else None,
     )
 

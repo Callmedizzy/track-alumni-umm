@@ -15,11 +15,29 @@ export default function LoginPage() {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchCategory, setSearchCategory] = useState('Semua')
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false)
+
+  const categories = ['Semua', 'Nama', 'NIM', 'Prodi', 'Fakultas']
+
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768)
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  const handleSearch = () => {
+    if (!searchQuery.trim() && searchCategory === 'Semua') {
+      navigate('/alumni')
+      return
+    }
+    const params = new URLSearchParams()
+    if (searchQuery) params.set('search', searchQuery)
+    if (searchCategory !== 'Semua') params.set('category', searchCategory.toLowerCase())
+    navigate(`/alumni?${params.toString()}`)
+  }
 
   // if (user?.role === 'admin') return <Navigate to="/dashboard" replace />
 
@@ -279,21 +297,67 @@ export default function LoginPage() {
         }}>
           {/* Category pill */}
           {!isMobile && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 10,
-              padding: '0 32px 0 40px',
-              background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
-              borderRight: '1px solid rgba(0,0,0,0.05)',
-              cursor: 'pointer', flexShrink: 0,
-              fontWeight: 700, fontSize: '1.1rem', color: '#1e40af',
-            }}>
-              Semua <ChevronDown size={20} strokeWidth={2.5} />
+            <div 
+              style={{ position: 'relative', display: 'flex' }}
+              onMouseLeave={() => setShowCategoryMenu(false)}
+            >
+              <div 
+                onClick={() => setShowCategoryMenu(!showCategoryMenu)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '0 32px 0 40px',
+                  background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
+                  borderRight: '1px solid rgba(0,0,0,0.05)',
+                  cursor: 'pointer', flexShrink: 0,
+                  fontWeight: 700, fontSize: '1.1rem', color: '#1e40af',
+                  minWidth: 160,
+                }}
+              >
+                {searchCategory} <ChevronDown size={20} strokeWidth={2.5} style={{ 
+                  transform: showCategoryMenu ? 'rotate(180deg)' : 'none',
+                  transition: 'transform 0.2s'
+                }} />
+              </div>
+
+              {showCategoryMenu && (
+                <div style={{
+                  position: 'absolute', top: '100%', left: 0, width: '100%',
+                  background: '#fff', boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                  borderRadius: '0 0 16px 16px', border: '1px solid #e2e8f0',
+                  borderTop: 'none', zIndex: 50, overflow: 'hidden',
+                  animation: 'slideDown 0.2s ease-out'
+                }}>
+                  <style>{`@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+                  {categories.map(cat => (
+                    <div
+                      key={cat}
+                      onClick={() => {
+                        setSearchCategory(cat)
+                        setShowCategoryMenu(false)
+                      }}
+                      style={{
+                        padding: '12px 24px', fontSize: '0.95rem', fontWeight: 600,
+                        color: searchCategory === cat ? '#4f46e5' : '#475569',
+                        background: searchCategory === cat ? '#f5f3ff' : 'transparent',
+                        cursor: 'pointer', transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = '#f8fafc' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = searchCategory === cat ? '#f5f3ff' : 'transparent' }}
+                    >
+                      {cat.toUpperCase()}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {/* Input */}
           <input
             type="text"
-            placeholder={isMobile ? "Cari alumni..." : "Kata kunci: [Nama] [PT] [Prodi] [NIM] [NIDN] [NUPTK]"}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            placeholder={isMobile ? "Cari alumni..." : `Cari berdasarkan ${searchCategory === 'Semua' ? 'Nama/NIM' : searchCategory}...`}
             style={{
               flex: 1, border: 'none', outline: 'none',
               padding: isMobile ? '0 20px' : '0 32px', 
@@ -303,15 +367,21 @@ export default function LoginPage() {
             }}
           />
           {/* Search btn */}
-          <button style={{
-            background: 'transparent', border: 'none',
-            padding: isMobile ? '0 16px' : '0 40px', cursor: 'pointer',
-            color: '#4f46e5', display: 'flex', alignItems: 'center',
-          }}>
+          <button 
+            onClick={handleSearch}
+            style={{
+              background: 'transparent', border: 'none',
+              padding: isMobile ? '0 16px' : '0 40px', cursor: 'pointer',
+              color: '#4f46e5', display: 'flex', alignItems: 'center',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#3b82f6' }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#4f46e5' }}
+          >
             <Search size={isMobile ? 22 : 32} strokeWidth={2.5} />
           </button>
         </div>
-        <a href="/daftar.html" style={{ marginTop: isMobile ? 12 : 20, color: '#4f46e5', fontSize: isMobile ? '0.85rem' : '1rem', fontWeight: 700, textDecoration: 'underline' }}>
+        <a href="/alumni" style={{ marginTop: isMobile ? 12 : 20, color: '#4f46e5', fontSize: isMobile ? '0.85rem' : '1rem', fontWeight: 700, textDecoration: 'underline' }}>
           Pencarian Spesifik
         </a>
       </div>

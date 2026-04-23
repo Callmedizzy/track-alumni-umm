@@ -76,11 +76,17 @@ class AlumniListItem(BaseModel):
     id: int
     nama: str
     nim: str
+    tahun_masuk: Optional[int] = None
     prodi: Optional[str] = None
     fakultas: Optional[str] = None
     tgl_lulus: Optional[date] = None
     has_contact: bool = False
     has_career: bool = False
+    # Additional fields for the table in Image 2
+    tempat_kerja: Optional[str] = None
+    posisi: Optional[str] = None
+    alamat_kerja: Optional[str] = None
+    status_kerja: Optional[StatusKerja] = None
 
     class Config:
         from_attributes = True
