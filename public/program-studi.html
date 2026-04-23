@@ -13,8 +13,8 @@
       --card: #ffffff;
       --text: #0f172a;
       --muted: #3f3f46;
-      --border: #d9c7ff;
-      --accent: #4f46e5;
+      --border: #cfe0ff;
+      --accent: #2563eb;
     }
 
     * {
@@ -28,47 +28,111 @@
       color: var(--text);
     }
 
-    .wrap {
-      max-width: 1240px;
-      margin: 22px auto 30px;
-      padding: 0 16px;
+    .site-header {
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
     }
 
-    .topbar {
+    .site-header-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      gap: 16px;
     }
 
-    h1 {
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #eef2ff;
+    }
+
+    .brand-text {
       margin: 0;
-      font-size: clamp(1.25rem, 2vw, 1.6rem);
+      font-size: 28px;
+      font-weight: 800;
+      color: #1e3a8a;
+      line-height: 1;
       letter-spacing: 0.2px;
     }
 
-    .back-link {
+    .header-back {
       text-decoration: none;
       color: var(--accent);
       font-weight: 600;
-      border: 1px solid rgba(79, 70, 229, 0.28);
-      border-radius: 10px;
-      padding: 9px 14px;
+      border: 1px solid rgba(37, 99, 235, 0.28);
+      border-radius: 9px;
+      padding: 7px 12px;
       background: #fff;
+      white-space: nowrap;
+    }
+
+    .wrap {
+      max-width: 1380px;
+      margin: 16px auto 24px;
+      padding: 0 12px;
+    }
+
+    .breadcrumb {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .breadcrumb span {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .hero {
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #3b82f6 100%);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.24);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .hero-kicker {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    .hero-title {
+      margin: 4px 0 0;
+      font-size: clamp(1.25rem, 1.9vw, 1.9rem);
+      font-weight: 800;
+      line-height: 1.2;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(315px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .card {
       background: var(--card);
-      border-radius: 18px;
+      border-radius: 14px;
       border: 1px solid var(--border);
       box-shadow: 0 3px 12px rgba(131, 85, 228, 0.08);
-      padding: 14px;
+      padding: 10px;
     }
 
     .head {
@@ -78,58 +142,88 @@
     }
 
     .icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 12px;
+      width: 54px;
+      height: 54px;
+      border-radius: 10px;
       background: #f4eff9;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      font-size: 24px;
       flex-shrink: 0;
     }
 
     .title {
       margin: 0;
-      font-size: 33px;
+      font-size: 24px;
       font-weight: 800;
-      line-height: 1;
+      line-height: 1.05;
     }
 
     .meta {
-      margin: 6px 0 0;
-      font-size: 22px;
+      margin: 4px 0 0;
+      font-size: 14px;
       color: var(--muted);
       font-weight: 500;
-      line-height: 1.18;
+      line-height: 1.2;
     }
 
     .btn {
-      margin-top: 14px;
+      margin-top: 10px;
       width: 100%;
-      height: 42px;
-      border-radius: 12px;
+      height: 34px;
+      border-radius: 10px;
       border: 1px solid var(--accent);
       background: #fff;
       color: var(--accent);
       font: inherit;
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 500;
       pointer-events: none;
     }
 
-    @media (max-width: 900px) {
-      .title { font-size: 30px; }
-      .meta { font-size: 19px; }
+    @media (max-width: 1320px) {
+      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 1080px) {
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 780px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .title { font-size: 22px; }
+    }
+
+    @media (max-width: 520px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .brand-text { font-size: 22px; }
+      .hero-title { font-size: 1.35rem; }
+      .hero-kicker { font-size: 15px; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <h1>Daftar Program Studi</h1>
-      <a class="back-link" href="/login">Kembali</a>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand">
+        <img class="brand-logo" src="logo-umm.png" alt="Logo UMM" />
+        <p class="brand-text">UMM Tracker</p>
+      </div>
+      <a class="header-back" href="/login">Kembali</a>
     </div>
+  </header>
+
+  <div class="wrap">
+    <p class="breadcrumb">Beranda &gt; <span>Program Studi</span></p>
+
+    <section class="hero" aria-label="Program Studi Header">
+      <p class="hero-kicker">Yuk cari tau tentang</p>
+      <h1 class="hero-title">Program Studi Berdasarkan Bidang Ilmu di Indonesia</h1>
+    </section>
 
     <div class="grid">
       <article class="card">
