@@ -40,6 +40,15 @@ export default function AlumniPage() {
   const [showFilters, setShowFilters] = useState(false)
 
   const [editTarget, setEditTarget] = useState(null) // { nim, nama }
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false)
+
+  const categories = [
+    { id: '', label: 'Semua' },
+    { id: 'nama', label: 'Nama' },
+    { id: 'nim', label: 'NIM' },
+    { id: 'prodi', label: 'Prodi' },
+    { id: 'fakultas', label: 'Fakultas' },
+  ]
 
   const fetchAlumni = useCallback(async () => {
     setLoading(true)
@@ -99,17 +108,64 @@ export default function AlumniPage() {
       <div className="card p-4">
         <div className="flex gap-3 flex-wrap">
           {/* Search */}
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <input
-              id="alumni-search-input"
-              type="text"
-              className="input pl-9"
-              placeholder="Cari nama atau NIM..."
-              value={filters.search}
-              onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
-              onKeyDown={e => e.key === 'Enter' && applyFilters()}
-            />
+          <div className="flex flex-1 min-w-[300px] border border-surface-border rounded-lg bg-surface group focus-within:ring-2 focus-within:ring-primary-600 focus-within:border-transparent transition-all relative">
+            {/* Custom Category Dropdown */}
+            <div className="relative">
+              <button
+                id="alumni-category-trigger"
+                onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                className="h-full flex items-center justify-between gap-3 px-4 bg-surface-card border-r border-surface-border text-sm font-bold text-slate-200 min-w-[130px] hover:bg-surface-border transition-colors group/btn"
+              >
+                <span className="uppercase tracking-wide">
+                  {categories.find(c => c.id === filters.category)?.label || 'SEMUA'}
+                </span>
+                <ChevronRight className={clsx("w-4 h-4 text-slate-500 transition-transform duration-200", isCategoryOpen && "rotate-90")} />
+              </button>
+
+              {isCategoryOpen && (
+                <>
+                  <div className="fixed inset-0 z-[60]" onClick={() => setIsCategoryOpen(false)} />
+                  <div className="absolute top-[calc(100%+8px)] left-0 w-56 bg-white rounded-2xl shadow-2xl z-[70] overflow-hidden border border-slate-200 animate-slide-up">
+                    {categories.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          setFilters(f => ({ ...f, category: cat.id }))
+                          setIsCategoryOpen(false)
+                        }}
+                        className={clsx(
+                          "w-full text-left px-5 py-3 text-sm transition-all duration-200",
+                          cat.id === ''
+                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold"
+                            : "text-[#007bff] hover:bg-slate-50 font-semibold border-b border-slate-100 last:border-0"
+                        )}
+                      >
+                        {cat.label.toUpperCase()}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="relative flex-1 flex items-center">
+              <Search className="absolute left-3 w-4 h-4 text-slate-500" />
+              <input
+                id="alumni-search-input"
+                type="text"
+                className="w-full bg-transparent pl-9 pr-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none"
+                placeholder={
+                  !filters.category ? "Cari nama atau NIM..." :
+                  filters.category === 'nama' ? "Cari nama alumni..." :
+                  filters.category === 'nim' ? "Cari NIM alumni..." :
+                  filters.category === 'prodi' ? "Cari program studi..." :
+                  "Cari fakultas..."
+                }
+                value={filters.search}
+                onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
+                onKeyDown={e => e.key === 'Enter' && applyFilters()}
+              />
+            </div>
           </div>
 
           <button

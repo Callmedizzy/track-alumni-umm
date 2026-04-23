@@ -293,7 +293,7 @@ export default function LoginPage() {
           background: '#fff',
           boxShadow: '0 20px 60px rgba(0,0,0,0.14)',
           border: '1px solid rgba(79,70,229,0.08)',
-          overflow: 'hidden',
+          overflow: 'visible',
         }}>
           {/* Category pill */}
           {!isMobile && (
@@ -306,29 +306,31 @@ export default function LoginPage() {
                 style={{
                   display: 'flex', alignItems: 'center', gap: 10,
                   padding: '0 32px 0 40px',
-                  background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
-                  borderRight: '1px solid rgba(0,0,0,0.05)',
+                  background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                  borderRight: '1px solid rgba(255,255,255,0.1)',
                   cursor: 'pointer', flexShrink: 0,
-                  fontWeight: 700, fontSize: '1.1rem', color: '#1e40af',
+                  fontWeight: 700, fontSize: '1.1rem', color: '#fff',
                   minWidth: 160,
+                  borderRadius: '100px 0 0 100px',
                 }}
               >
-                {searchCategory} <ChevronDown size={20} strokeWidth={2.5} style={{ 
+                {searchCategory.toUpperCase()} <ChevronDown size={20} strokeWidth={2.5} style={{ 
                   transform: showCategoryMenu ? 'rotate(180deg)' : 'none',
-                  transition: 'transform 0.2s'
+                  transition: 'transform 0.2s',
+                  color: '#fff'
                 }} />
               </div>
 
               {showCategoryMenu && (
                 <div style={{
-                  position: 'absolute', top: '100%', left: 0, width: '100%',
-                  background: '#fff', boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-                  borderRadius: '0 0 16px 16px', border: '1px solid #e2e8f0',
-                  borderTop: 'none', zIndex: 50, overflow: 'hidden',
-                  animation: 'slideDown 0.2s ease-out'
+                  position: 'absolute', top: 'calc(100% + 12px)', left: 0, width: 240,
+                  background: '#fff', boxShadow: '0 25px 60px rgba(0,0,0,0.2)',
+                  borderRadius: '24px', border: '1px solid #f1f5f9',
+                  zIndex: 100, overflow: 'hidden',
+                  animation: 'slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
                 }}>
-                  <style>{`@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-                  {categories.map(cat => (
+                  <style>{`@keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+                  {categories.map((cat, idx) => (
                     <div
                       key={cat}
                       onClick={() => {
@@ -336,13 +338,16 @@ export default function LoginPage() {
                         setShowCategoryMenu(false)
                       }}
                       style={{
-                        padding: '12px 24px', fontSize: '0.95rem', fontWeight: 600,
-                        color: searchCategory === cat ? '#4f46e5' : '#475569',
-                        background: searchCategory === cat ? '#f5f3ff' : 'transparent',
-                        cursor: 'pointer', transition: 'all 0.2s'
+                        padding: '16px 28px', fontSize: '1rem', fontWeight: 800,
+                        color: cat === searchCategory ? '#fff' : '#2563eb',
+                        background: cat === searchCategory ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'transparent',
+                        cursor: 'pointer', transition: 'all 0.2s',
+                        borderBottom: idx === categories.length - 1 ? 'none' : '1px solid #f8fafc',
+                        display: 'flex', alignItems: 'center',
+                        letterSpacing: '0.5px'
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.background = '#f8fafc' }}
-                      onMouseLeave={e => { e.currentTarget.style.background = searchCategory === cat ? '#f5f3ff' : 'transparent' }}
+                      onMouseEnter={e => { if (cat !== searchCategory) e.currentTarget.style.background = '#f1f5f9' }}
+                      onMouseLeave={e => { if (cat !== searchCategory) e.currentTarget.style.background = 'transparent' }}
                     >
                       {cat.toUpperCase()}
                     </div>

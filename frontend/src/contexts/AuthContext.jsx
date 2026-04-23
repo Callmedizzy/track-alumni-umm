@@ -21,21 +21,29 @@ export function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     try {
-      const formData = new FormData()
-      formData.append('username', username)
-      formData.append('password', password)
-
-      const { data } = await api.post('/auth/login', formData)
+      // Menggunakan JSON (objek biasa) bukan FormData agar sesuai dengan Pydantic di Backend
+      const { data } = await api.post('/auth/login', { username, password })
       
-      // If login successful, we store everything
       localStorage.setItem('access_token', data.access_token)
-      localStorage.setItem('user', JSON.stringify(data.user))
-      setUser(data.user)
+      localStorage.setItem('user', JSON.stringify({
+        username: data.username,
+        role: data.role
+      }))
+      setUser({ username: data.username, role: data.role })
       return { success: true }
     } catch (err) {
+      // Pastikan error message adalah string agar tidak membuat React crash (422 returns array)
+      let errorMsg = 'Gagal login. Periksa username dan password.'
+      const detail = err.response?.data?.detail
+      if (typeof detail === 'string') {
+        errorMsg = detail
+      } else if (Array.isArray(detail)) {
+        errorMsg = detail[0]?.msg || JSON.stringify(detail)
+      }
+      
       return { 
         success: false, 
-        error: err.response?.data?.detail || 'Gagal login. Periksa username dan password.' 
+        error: errorMsg
       }
     }
   }
