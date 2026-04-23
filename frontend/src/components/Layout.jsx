@@ -68,7 +68,7 @@ export default function Layout({ children }) {
                 {user?.username || 'Alumni Tracker'}
               </h2>
               <p className="text-white/70 text-xs font-bold uppercase tracking-wider">
-                {isAdmin ? 'Admin' : 'Viewer'}
+                {isAdmin ? 'Admin' : 'User'}
               </p>
             </div>
           </div>

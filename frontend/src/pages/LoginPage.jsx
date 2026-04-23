@@ -196,67 +196,60 @@ export default function LoginPage() {
                         </div>
                       </div>
 
-                      <div style={{ height: '1px', background: '#f1f5f9', margin: '0 -24px 20px' }} />
-
                       {/* Menu Links */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        {user.role === 'admin' && (
-                          <button
-                            onClick={() => { navigate('/dashboard'); setShowUserMenu(false) }}
-                            style={{
-                              background: 'none', border: 'none', textAlign: 'left',
-                              fontSize: '1rem', fontWeight: 600, color: '#3b82f6',
-                              padding: '8px 0', cursor: 'pointer', fontFamily: 'inherit'
-                            }}
-                          >
-                            Dashboard
-                          </button>
+                        {user.role === 'admin' ? (
+                          <>
+                            <button
+                              onClick={() => { navigate('/dashboard'); setShowUserMenu(false) }}
+                              style={{
+                                background: 'none', border: 'none', textAlign: 'left',
+                                fontSize: '1rem', fontWeight: 600, color: '#3b82f6',
+                                padding: '8px 0', cursor: 'pointer', fontFamily: 'inherit'
+                              }}
+                            >
+                              Dashboard
+                            </button>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748b', padding: '4px 0' }}>
+                              Status: Administrator
+                            </div>
+                            <button
+                              onClick={() => { logout(); setShowUserMenu(false) }}
+                              style={{
+                                background: 'none', border: 'none', textAlign: 'left',
+                                fontSize: '1rem', fontWeight: 600, color: '#ef4444',
+                                padding: '8px 0', cursor: 'pointer', fontFamily: 'inherit'
+                              }}
+                            >
+                              Keluar
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748b', padding: '4px 0' }}>
+                              Status: User (Public)
+                            </div>
+                            <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }} />
+                            <button
+                              onClick={() => { setShowModal(true); setShowUserMenu(false) }}
+                              style={{
+                                background: '#4f46e5', border: 'none', textAlign: 'center',
+                                fontSize: '0.9rem', fontWeight: 700, color: '#fff',
+                                padding: '10px', borderRadius: '10px', cursor: 'pointer', 
+                                fontFamily: 'inherit', marginTop: '8px',
+                                boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)'
+                              }}
+                            >
+                              Login Admin
+                            </button>
+                          </>
                         )}
-                        
-                        <div style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748b', padding: '4px 0' }}>
-                          Status: {user.role === 'admin' ? 'Administrator' : 'User'}
-                        </div>
-
-                        <button
-                          onClick={() => { logout(); setShowUserMenu(false); navigate('/login') }}
-                          style={{
-                            background: 'none', border: 'none', textAlign: 'left',
-                            fontSize: '1rem', fontWeight: 600, color: '#ef4444',
-                            padding: '8px 0', cursor: 'pointer', fontFamily: 'inherit'
-                          }}
-                        >
-                          Keluar
-                        </button>
                       </div>
                     </div>
                   )}
                 </div>
               </>
-            ) : (
-              <button
-                onClick={() => setShowModal(true)}
-                title="Login Admin"
-                style={{
-                  width: 56, height: 56, borderRadius: 16,
-                  background: '#fff',
-                  color: '#000',
-                  border: '1px solid #e2e8f0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
-                onMouseEnter={e => { 
-                  e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={e => { 
-                  e.currentTarget.style.boxShadow = 'none';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <User size={26} fill="#000" />
-              </button>
-            )}
+            ) : null}
           </div>
         </div>
       </nav>

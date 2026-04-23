@@ -8,14 +8,12 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem('user')
-      if (!stored) return null
-
-      const parsed = JSON.parse(stored)
-      // Any visitor is technically a user, but if they have a token, we parse it.
-      // If role is missing or not admin, we still treat them as 'user'
-      return parsed
+      if (stored) return JSON.parse(stored)
+      
+      // Default GUEST user (sebagai 'user' sesuai permintaan)
+      return { username: 'User', role: 'user' }
     } catch {
-      return null
+      return { username: 'User', role: 'user' }
     }
   })
 
@@ -51,7 +49,8 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem('access_token')
     localStorage.removeItem('user')
-    setUser(null)
+    // Setelah logout, kembali ke status 'user' default (guest)
+    setUser({ username: 'User', role: 'user' })
   }
 
   const isAdmin = user?.role === 'admin'
