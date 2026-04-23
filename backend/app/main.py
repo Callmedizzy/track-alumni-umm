@@ -55,9 +55,9 @@ app.add_middleware(
 
 # ─── Routers ──────────────────────────────────────────────────────────────────
 
-app.include_router(auth.router)
-app.include_router(alumni.router)
-app.include_router(admin.router)
+app.include_router(auth.router, prefix="/api")
+app.include_router(alumni.router, prefix="/api")
+app.include_router(admin.router, prefix="/api")
 
 
 @app.get("/", tags=["Health"])
