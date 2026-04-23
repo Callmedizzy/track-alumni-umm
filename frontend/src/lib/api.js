@@ -24,9 +24,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      const user = JSON.parse(localStorage.getItem('user') || '{}')
       localStorage.removeItem('access_token')
       localStorage.removeItem('user')
-      window.location.href = '/login'
+      
+      // Hanya tendang ke login jika sebelumnya adalah Admin
+      if (user.role === 'admin') {
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }

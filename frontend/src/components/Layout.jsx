@@ -9,7 +9,7 @@ import clsx from 'clsx'
 
 const navItems = [
   { label: 'Beranda', href: '/login', icon: Home },
-  { label: 'Statistik', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Statistik', href: '/dashboard', icon: LayoutDashboard, adminOnly: true },
   { label: 'Pelacakan Alumni', href: '/alumni', icon: Search },
   { label: 'Export Data', href: '/export', icon: Download, adminOnly: true },
   { label: 'Audit Log', href: '/admin/logs', icon: ScrollText, adminOnly: true },

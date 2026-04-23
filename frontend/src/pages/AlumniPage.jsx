@@ -135,9 +135,9 @@ export default function AlumniPage() {
                         }}
                         className={clsx(
                           "w-full text-left px-5 py-3 text-sm transition-all duration-200",
-                          cat.id === ''
-                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold"
-                            : "text-[#007bff] hover:bg-slate-50 font-semibold border-b border-slate-100 last:border-0"
+                          cat.id === (filters.category || '')
+                            ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold"
+                            : "text-[#2563eb] hover:bg-slate-50 font-semibold border-b border-slate-100 last:border-0"
                         )}
                       >
                         {cat.label.toUpperCase()}
