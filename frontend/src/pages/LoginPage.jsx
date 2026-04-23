@@ -388,9 +388,7 @@ export default function LoginPage() {
             <Search size={isMobile ? 22 : 32} strokeWidth={2.5} />
           </button>
         </div>
-        <a href="/alumni" style={{ marginTop: isMobile ? 12 : 20, color: '#4f46e5', fontSize: isMobile ? '0.85rem' : '1rem', fontWeight: 700, textDecoration: 'underline' }}>
-          Pencarian Spesifik
-        </a>
+        {/* Pencarian Spesifik dihapus sesuai permintaan user */}
       </div>
 
       {/* ===== MENU GRID ===== */}
