@@ -38,11 +38,8 @@ export default function LoginPage() {
 
   const menuItemsData = [
     { id: 'program-studi', icon: '\u{1F4D8}', label: 'Program Studi' },
-    { id: 'perguruan-tinggi', icon: '\u{1F3E2}', label: 'Perguruan Tinggi' },
-    { id: 'statistik', icon: '\u{1F4CA}', label: 'Statistik' },
-    { id: 'publikasi', icon: '\u{1F4DA}', label: 'Publikasi' },
-    { id: 'pengumuman', icon: '\u{1F4E2}', label: 'Pengumuman' },
     { id: 'peta-alumni', icon: '\u{1F5FA}\u{FE0F}', label: 'Peta Alumni' },
+    { id: 'statistik', icon: '\u{1F4CA}', label: 'Statistik' },
   ]
 
   const handleMenuClick = (itemId) => {
@@ -53,6 +50,10 @@ export default function LoginPage() {
 
     if (itemId === 'statistik') {
       window.location.href = '/statistik.html'
+    }
+
+    if (itemId === 'peta-alumni') {
+      window.location.href = '/peta.html'
     }
   }
 
