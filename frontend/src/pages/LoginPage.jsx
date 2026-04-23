@@ -24,9 +24,18 @@ export default function LoginPage() {
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768)
+    const handleClickOutside = (e) => {
+      if (showCategoryMenu && !e.target.closest('.category-container')) {
+        setShowCategoryMenu(false)
+      }
+    }
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+    window.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showCategoryMenu])
 
   const handleSearch = () => {
     if (!searchQuery.trim() && searchCategory === 'Semua') {
@@ -298,8 +307,8 @@ export default function LoginPage() {
           {/* Category pill */}
           {!isMobile && (
             <div 
+              className="category-container"
               style={{ position: 'relative', display: 'flex' }}
-              onMouseLeave={() => setShowCategoryMenu(false)}
             >
               <div 
                 onClick={() => setShowCategoryMenu(!showCategoryMenu)}
