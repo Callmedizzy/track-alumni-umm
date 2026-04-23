@@ -48,6 +48,11 @@ export default function LoginPage() {
   const handleMenuClick = (itemId) => {
     if (itemId === 'program-studi') {
       window.location.href = '/program-studi.html'
+      return
+    }
+
+    if (itemId === 'statistik') {
+      window.location.href = '/statistik.html'
     }
   }
 

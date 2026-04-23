@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistik Alumni</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --dark: #1f2a44;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --accent: #4f46e5;
+      --bar: #c257cc;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Outfit", sans-serif;
+      background: var(--bg);
+      color: #0f172a;
+    }
+
+    .site-header {
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .site-header-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #eef2ff;
+    }
+
+    .brand-text {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: #1e3a8a;
+      line-height: 1;
+      letter-spacing: 0.2px;
+    }
+
+    .header-back {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+      border: 1px solid rgba(79, 70, 229, 0.28);
+      border-radius: 9px;
+      padding: 7px 12px;
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    .wrap {
+      max-width: 1380px;
+      margin: 14px auto 24px;
+      padding: 0 10px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .breadcrumb {
+      margin: 0;
+      font-size: 15px;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .breadcrumb span {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .dark-card {
+      background: var(--dark);
+      color: #fff;
+      border-radius: 14px;
+      padding: 18px 18px 14px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.24);
+    }
+
+    .dark-title {
+      margin: 0 0 8px;
+      font-size: 31px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .donut-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .donut {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background:
+        conic-gradient(
+          #3b82f6 0 31%,
+          #06b6d4 31% 46%,
+          #8b5cf6 46% 58%,
+          #10b981 58% 69%,
+          #f59e0b 69% 76%,
+          #ef4444 76% 84%,
+          #ec4899 84% 92%,
+          #84cc16 92% 100%
+        );
+      position: relative;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.14);
+    }
+
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 52px;
+      border-radius: 50%;
+      background: var(--dark);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12);
+    }
+
+    .legend {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      justify-content: center;
+      color: #93c5fd;
+      font-size: 20px;
+    }
+
+    .legend li {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 0;
+      flex-shrink: 0;
+    }
+
+    .light-card {
+      background: var(--card);
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      padding: 14px 14px 10px;
+    }
+
+    .bar-title {
+      margin: 2px 0 10px;
+      text-align: center;
+      color: #5142c9;
+      font-size: 35px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .bar-wrap {
+      position: relative;
+      padding: 14px 10px 10px 76px;
+      min-height: 420px;
+      border-top: 1px solid transparent;
+    }
+
+    .y-label {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: left top;
+      font-size: 24px;
+      color: #111827;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .bars {
+      height: 390px;
+      border-left: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      align-items: end;
+      gap: 14px;
+      padding: 0 8px;
+      position: relative;
+      background-image: linear-gradient(to top, rgba(148, 163, 184, 0.3) 1px, transparent 1px);
+      background-size: 100% 65px;
+    }
+
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: end;
+      gap: 6px;
+    }
+
+    .bar-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .bar {
+      width: min(90px, 100%);
+      height: calc(var(--h) * 1%);
+      min-height: 4px;
+      background: linear-gradient(180deg, #c35ad0, #b44ec3);
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 4px 10px rgba(180, 78, 195, 0.3);
+    }
+
+    .bar-label {
+      font-size: 20px;
+      color: #1f2937;
+      text-align: center;
+      line-height: 1.2;
+      min-height: 46px;
+      display: flex;
+      align-items: start;
+      justify-content: center;
+    }
+
+    .x-label {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 28px;
+      color: #111827;
+      font-weight: 500;
+    }
+
+    @media (max-width: 1100px) {
+      .donut { width: 240px; height: 240px; }
+      .donut::after { inset: 44px; }
+      .legend { font-size: 16px; }
+      .bar-title { font-size: 26px; }
+      .y-label { font-size: 18px; }
+      .bar-label { font-size: 14px; min-height: 34px; }
+      .x-label { font-size: 20px; }
+      .bar-value { font-size: 16px; }
+    }
+
+    @media (max-width: 760px) {
+      .brand-text { font-size: 22px; }
+      .bars { gap: 8px; }
+      .bar-wrap { padding-left: 54px; min-height: 360px; }
+      .bars { height: 320px; }
+      .y-label { left: 4px; font-size: 14px; }
+      .bar-label { font-size: 12px; }
+      .x-label { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand">
+        <img class="brand-logo" src="logo-umm.png" alt="Logo UMM" />
+        <p class="brand-text">UMM Tracker</p>
+      </div>
+      <a class="header-back" href="/login">Kembali</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p class="breadcrumb">Beranda &gt; <span>Statistik</span></p>
+
+    <section class="dark-card" aria-label="Distribusi Fakultas">
+      <h1 class="dark-title">Distribusi Per Fakultas</h1>
+      <div class="donut-area">
+        <div class="donut" role="img" aria-label="Diagram donat distribusi per fakultas"></div>
+        <ul class="legend">
+          <li><span class="dot" style="background:#3b82f6"></span>Keguruan Dan Ilmu Pendidikan</li>
+          <li><span class="dot" style="background:#06b6d4"></span>Teknik</li>
+          <li><span class="dot" style="background:#8b5cf6"></span>Ilmu Sosial Dan Ilmu Politik</li>
+          <li><span class="dot" style="background:#10b981"></span>Ekonomi Dan Bisnis</li>
+          <li><span class="dot" style="background:#f59e0b"></span>Ekonomi</li>
+          <li><span class="dot" style="background:#ef4444"></span>Ilmu Kesehatan</li>
+          <li><span class="dot" style="background:#ec4899"></span>Psikologi</li>
+          <li><span class="dot" style="background:#84cc16"></span>Pertanian Dan Peternakan</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="light-card" aria-label="Diagram Balok Jurusan">
+      <h2 class="bar-title">Perbandingan Jumlah Mahasiswa Berdasarkan Jurusan</h2>
+      <div class="bar-wrap">
+        <p class="y-label">Jumlah Mahasiswa per Jurusan</p>
+        <div class="bars">
+          <div class="bar-col">
+            <div class="bar-value">7.990.889</div>
+            <div class="bar" style="--h:66;"></div>
+            <div class="bar-label">Teknik</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-value">8.908.902</div>
+            <div class="bar" style="--h:73;"></div>
+            <div class="bar-label">Ekonomi</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-value">5.149.315</div>
+            <div class="bar" style="--h:42;"></div>
+            <div class="bar-label">Kesehatan</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-value">7.601.778</div>
+            <div class="bar" style="--h:62;"></div>
+            <div class="bar-label">Sosial</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-value">12.188.570</div>
+            <div class="bar" style="--h:90;"></div>
+            <div class="bar-label">Pendidikan</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-value">1.335.775</div>
+            <div class="bar" style="--h:11;"></div>
+            <div class="bar-label">MIPA</div>
+          </div>
+        </div>
+        <p class="x-label">Jurusan</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
