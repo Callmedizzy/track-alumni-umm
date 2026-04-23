@@ -104,7 +104,7 @@ export default function LoginPage() {
       <div style={{
         width: '100%',
         background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 55%, #93c5fd 100%)',
-        padding: '48px 5% 90px',
+        padding: '96px 5% 108px',
         position: 'relative',
         overflow: 'hidden',
       }}>
@@ -126,34 +126,18 @@ export default function LoginPage() {
           }}>
             Pembaruan Data Diri
           </h1>
-          <a
-            href="/form.html"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#fff', color: '#1e40af',
-              fontWeight: 700, padding: '12px 32px',
-              borderRadius: 100, textDecoration: 'none',
-              fontSize: '1rem',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)' }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)' }}
-          >
-            Klik Disini →
-          </a>
         </div>
       </div>
 
       {/* ===== SEARCH BAR (overlapping hero) ===== */}
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        marginTop: -52, position: 'relative', zIndex: 10,
+        marginTop: -40, position: 'relative', zIndex: 10,
         padding: '0 5%',
       }}>
         <div style={{
           display: 'flex', alignItems: 'stretch',
-          maxWidth: 860, width: '100%',
+          maxWidth: 900, width: '100%',
           borderRadius: 100,
           background: '#fff',
           boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
@@ -225,46 +209,6 @@ export default function LoginPage() {
             <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#1e293b' }}>{item.label}</div>
           </div>
         ))}
-      </div>
-
-      {/* ===== BOTTOM BANNERS ===== */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: 20, maxWidth: 900, margin: '36px auto 48px',
-        padding: '0 5%', width: '100%',
-      }}>
-        <div style={{
-          background: 'linear-gradient(135deg, #1e40af, #3b82f6)',
-          borderRadius: 18, padding: '28px 32px',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          color: '#fff', boxShadow: '0 8px 25px rgba(30,64,175,0.25)',
-        }}>
-          <div>
-            <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 6, lineHeight: 1.3 }}>
-              Ada kendala terkait data Pendidikan Tinggi?
-            </h4>
-            <p style={{ fontSize: '0.88rem', opacity: 0.9 }}>
-              Cari informasi <strong>di sini!</strong>
-            </p>
-          </div>
-          <div style={{ fontSize: '3rem', opacity: 0.9 }}>💡</div>
-        </div>
-        <div style={{
-          background: 'linear-gradient(135deg, #0ea5e9, #38bdf8)',
-          borderRadius: 18, padding: '28px 32px',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          color: '#fff', boxShadow: '0 8px 25px rgba(14,165,233,0.25)',
-        }}>
-          <div>
-            <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 6, lineHeight: 1.3 }}>
-              Cari tahu perbedaannya!
-            </h4>
-            <p style={{ fontSize: '0.88rem', opacity: 0.9 }}>
-              Komparasi perguruan tinggi dan program studi impianmu <strong>di sini!</strong>
-            </p>
-          </div>
-          <div style={{ fontSize: '3rem', opacity: 0.9 }}>🔍</div>
-        </div>
       </div>
 
       {/* ===== FOOTER ===== */}
