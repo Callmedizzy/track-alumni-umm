@@ -13,6 +13,13 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({})
   const [showModal, setShowModal] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // if (user?.role === 'admin') return <Navigate to="/dashboard" replace />
 
@@ -69,24 +76,30 @@ export default function LoginPage() {
         background: '#fff',
         borderBottom: '1px solid #e2e8f0',
         boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-        padding: '0 5%',
+        padding: isMobile ? '0 20px' : '0 40px',
       }}>
         <div style={{
           display: 'flex', alignItems: 'center',
           justifyContent: 'space-between',
-          height: 64,
-          maxWidth: 1280, margin: '0 auto', width: '100%',
+          height: isMobile ? 64 : 84,
+          maxWidth: 1600, margin: '0 auto', width: '100%',
         }}>
           {/* Brand */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: 'linear-gradient(135deg,#4f46e5,#2563eb)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 16 }}>
+            <img 
+              src="/logo-umm.png" 
+              alt="UMM Logo" 
+              style={{ width: isMobile ? 36 : 54, height: isMobile ? 36 : 54, objectFit: 'contain' }}
+              onError={(e) => e.target.style.display = 'none'}
+            />
+            <span style={{ 
+              fontWeight: 800, 
+              fontSize: isMobile ? '1.1rem' : '1.6rem', 
+              color: '#1e3a8a', 
+              letterSpacing: '-0.5px' 
             }}>
-              <GraduationCap size={20} color="#fff" />
-            </div>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#2e1065' }}>UMM Tracker</span>
+              UMM Tracker
+            </span>
           </div>
 
           {/* Nav Actions */}
@@ -98,18 +111,28 @@ export default function LoginPage() {
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     style={{
-                      width: 44, height: 44, borderRadius: 12,
+                      width: isMobile ? 40 : 56, height: isMobile ? 40 : 56, borderRadius: isMobile ? 12 : 16,
                       background: '#fff',
                       color: '#000',
                       border: '1px solid #e2e8f0',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       cursor: 'pointer',
-                      transition: 'all 0.2s',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)' }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none' }}
+                    onMouseEnter={e => { 
+                      if (!isMobile) {
+                        e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                      }
+                    }}
+                    onMouseLeave={e => { 
+                      if (!isMobile) {
+                        e.currentTarget.style.boxShadow = 'none';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }
+                    }}
                   >
-                    <User size={20} fill="#000" />
+                    <User size={isMobile ? 20 : 26} fill="#000" />
                   </button>
 
                   {/* Dropdown Menu (Image 3 Style) */}
@@ -187,86 +210,94 @@ export default function LoginPage() {
                 onClick={() => setShowModal(true)}
                 title="Login Admin"
                 style={{
-                  width: 44, height: 44, borderRadius: 12,
+                  width: 56, height: 56, borderRadius: 16,
                   background: '#fff',
                   color: '#000',
                   border: '1px solid #e2e8f0',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)' }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none' }}
+                onMouseEnter={e => { 
+                  e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={e => { 
+                  e.currentTarget.style.boxShadow = 'none';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                <User size={20} />
+                <User size={26} fill="#000" />
               </button>
             )}
           </div>
         </div>
       </nav>
 
-      {/* ===== HERO BANNER ===== */}
       <div style={{
         width: '100%',
         background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 55%, #93c5fd 100%)',
-        padding: '96px 5% 108px',
+        padding: isMobile ? '60px 20px 80px' : '120px 5% 150px',
         position: 'relative',
         overflow: 'hidden',
       }}>
         {/* Grid pattern */}
         <div style={{
-          position: 'absolute', inset: 0, opacity: 0.15,
+          position: 'absolute', inset: 0, opacity: 0.1,
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
+          backgroundSize: isMobile ? '30px 30px' : '50px 50px',
         }} />
-        <div style={{ maxWidth: 1280, margin: '0 auto', position: 'relative', zIndex: 2 }}>
-          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.4rem', fontWeight: 400, marginBottom: 4 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', position: 'relative', zIndex: 2 }}>
+          <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: isMobile ? '1.1rem' : '1.6rem', fontWeight: 500, marginBottom: 8, letterSpacing: '0.5px' }}>
             Informasi
           </p>
           <h1 style={{
-            color: '#fff', fontSize: 'clamp(2rem, 5vw, 4rem)',
+            color: '#fff', fontSize: isMobile ? '2.4rem' : 'clamp(3rem, 6.5vw, 5.5rem)',
             fontWeight: 800, lineHeight: 1.1,
-            marginBottom: 28, letterSpacing: '-1px',
-            textShadow: '0 4px 15px rgba(0,0,0,0.1)',
+            marginBottom: isMobile ? 16 : 32, letterSpacing: '-1.5px',
+            textShadow: '0 10px 40px rgba(0,0,0,0.15)',
           }}>
             Pelacakan Mahasiswa
           </h1>
         </div>
       </div>
 
-      {/* ===== SEARCH BAR (overlapping hero) ===== */}
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        marginTop: -40, position: 'relative', zIndex: 10,
-        padding: '0 5%',
+        marginTop: isMobile ? -30 : -55, position: 'relative', zIndex: 10,
+        padding: isMobile ? '0 20px' : '0 5%',
       }}>
         <div style={{
           display: 'flex', alignItems: 'stretch',
-          maxWidth: 900, width: '100%',
+          maxWidth: 1100, width: '100%',
+          height: isMobile ? 54 : 84,
           borderRadius: 100,
           background: '#fff',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-          border: '1px solid rgba(79,70,229,0.12)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.14)',
+          border: '1px solid rgba(79,70,229,0.08)',
           overflow: 'hidden',
         }}>
           {/* Category pill */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            padding: '0 20px 0 24px',
-            background: 'linear-gradient(135deg, #e0e7ff, #c7d2fe)',
-            borderRight: '1px solid rgba(0,0,0,0.06)',
-            cursor: 'pointer', flexShrink: 0,
-            fontWeight: 700, fontSize: '0.95rem', color: '#1e293b',
-          }}>
-            Semua <ChevronDown size={15} />
-          </div>
+          {!isMobile && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              padding: '0 32px 0 40px',
+              background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
+              borderRight: '1px solid rgba(0,0,0,0.05)',
+              cursor: 'pointer', flexShrink: 0,
+              fontWeight: 700, fontSize: '1.1rem', color: '#1e40af',
+            }}>
+              Semua <ChevronDown size={20} strokeWidth={2.5} />
+            </div>
+          )}
           {/* Input */}
           <input
             type="text"
-            placeholder="Kata kunci: [Nama] [PT] [Prodi] [NIM] [NIDN] [NUPTK]"
+            placeholder={isMobile ? "Cari alumni..." : "Kata kunci: [Nama] [PT] [Prodi] [NIM] [NIDN] [NUPTK]"}
             style={{
               flex: 1, border: 'none', outline: 'none',
-              padding: '16px 20px', fontSize: '0.97rem',
+              padding: isMobile ? '0 20px' : '0 32px', 
+              fontSize: isMobile ? '0.95rem' : '1.2rem',
               color: '#0f172a', background: 'transparent',
               fontFamily: 'inherit',
             }}
@@ -274,13 +305,13 @@ export default function LoginPage() {
           {/* Search btn */}
           <button style={{
             background: 'transparent', border: 'none',
-            padding: '0 28px', cursor: 'pointer',
-            color: '#a855f7', display: 'flex', alignItems: 'center',
+            padding: isMobile ? '0 16px' : '0 40px', cursor: 'pointer',
+            color: '#4f46e5', display: 'flex', alignItems: 'center',
           }}>
-            <Search size={22} strokeWidth={2.5} />
+            <Search size={isMobile ? 22 : 32} strokeWidth={2.5} />
           </button>
         </div>
-        <a href="/daftar.html" style={{ marginTop: 10, color: '#3b82f6', fontSize: '0.88rem', fontWeight: 600, textDecoration: 'underline' }}>
+        <a href="/daftar.html" style={{ marginTop: isMobile ? 12 : 20, color: '#4f46e5', fontSize: isMobile ? '0.85rem' : '1rem', fontWeight: 700, textDecoration: 'underline' }}>
           Pencarian Spesifik
         </a>
       </div>
@@ -288,31 +319,55 @@ export default function LoginPage() {
       {/* ===== MENU GRID ===== */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 20,
-        maxWidth: 900,
-        margin: '48px auto 0',
-        padding: '0 5%',
+        gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+        gap: isMobile ? 16 : 40,
+        maxWidth: 1400,
+        margin: isMobile ? '40px auto 60px' : '80px auto 120px',
+        padding: isMobile ? '0 20px' : '0 5%',
         width: '100%',
       }}>
         {menuItemsData.map((item) => (
           <div
             key={item.label}
-            style={{
-              background: '#fff', borderRadius: 16,
-              padding: '28px 16px',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-              border: '1px solid rgba(0,0,0,0.04)',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
             onClick={() => handleMenuClick(item.id)}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.09)' }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.04)' }}
+            style={{
+              background: '#fff', borderRadius: isMobile ? 24 : 36,
+              padding: isMobile ? '32px 20px' : '70px 40px',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 4px 25px rgba(0,0,0,0.03)',
+              border: '1px solid #f1f5f9',
+              cursor: 'pointer',
+              transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            }}
+            onMouseEnter={e => { 
+              if (!isMobile) {
+                e.currentTarget.style.transform = 'translateY(-15px) scale(1.02)'; 
+                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0,0,0,0.12)';
+                e.currentTarget.style.borderColor = '#dbeafe';
+              }
+            }}
+            onMouseLeave={e => { 
+              if (!isMobile) {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                e.currentTarget.style.boxShadow = '0 4px 25px rgba(0,0,0,0.03)';
+                e.currentTarget.style.borderColor = '#f1f5f9';
+              }
+            }}
           >
-            <div style={{ fontSize: '2.2rem', marginBottom: 12 }}>{item.icon}</div>
-            <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#1e293b' }}>{item.label}</div>
+            <div style={{ 
+              fontSize: isMobile ? '3.5rem' : '6rem', 
+              marginBottom: isMobile ? 16 : 32, 
+              filter: 'drop-shadow(0 15px 20px rgba(0,0,0,0.15))' 
+            }}>
+              {item.icon}
+            </div>
+            <div style={{ 
+              fontSize: isMobile ? '1.1rem' : '1.8rem', 
+              fontWeight: 800, 
+              color: '#1e293b' 
+            }}>
+              {item.label}
+            </div>
           </div>
         ))}
       </div>
