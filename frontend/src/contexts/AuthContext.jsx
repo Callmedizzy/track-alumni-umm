@@ -1,13 +1,21 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import api from '../lib/api'
 
 const AuthContext = createContext(null)
+const ADMIN_ONLY_ERROR = 'Akun viewer tidak memiliki akses ke dashboard admin.'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem('user')
-      return stored ? JSON.parse(stored) : null
+      if (!stored) return null
+
+      const parsed = JSON.parse(stored)
+      if (parsed?.role === 'admin') return parsed
+
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('user')
+      return null
     } catch {
       return null
     }
@@ -18,6 +26,13 @@ export function AuthProvider({ children }) {
     setLoading(true)
     try {
       const { data } = await api.post('/auth/login', { username, password })
+      if (data.role !== 'admin') {
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('user')
+        setUser(null)
+        return { success: false, error: ADMIN_ONLY_ERROR }
+      }
+
       localStorage.setItem('access_token', data.access_token)
       localStorage.setItem('user', JSON.stringify({ username: data.username, role: data.role }))
       setUser({ username: data.username, role: data.role })

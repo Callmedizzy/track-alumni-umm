@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({})
   const [showModal, setShowModal] = useState(false)
 
-  if (user) return <Navigate to="/dashboard" replace />
+  if (user?.role === 'admin') return <Navigate to="/dashboard" replace />
 
   const validate = () => {
     const e = {}
