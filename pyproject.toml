@@ -1,5 +1,21 @@
 [project]
 name = "alumni-tracker"
-version = "1.0.0"
-requires-python = ">=3.12"
-dependencies = []
+version = "0.1.0"
+description = "Sistem Pelacakan Alumni UMM"
+requires-python = "==3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "bcrypt",
+    "python-jose[cryptography]",
+    "passlib[bcrypt]",
+    "slowapi",
+    "python-multipart",
+    "python-dotenv",
+    "pydantic",
+    "pydantic-settings",
+    "alembic",
+    "pandas",
+    "openpyxl"
+]
