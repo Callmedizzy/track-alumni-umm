@@ -18,6 +18,23 @@ export function AuthProvider({ children }) {
   })
 
   const login = async (username, password) => {
+    // --- BYPASS OFFLINE STATIS ---
+    if (username === 'admin' && (password === 'admin123' || password === 'admin')) {
+      const mockData = {
+        username: 'admin',
+        role: 'admin',
+        access_token: 'offline_token_admin_only'
+      }
+      localStorage.setItem('access_token', mockData.access_token)
+      localStorage.setItem('user', JSON.stringify({
+        username: mockData.username,
+        role: mockData.role
+      }))
+      setUser({ username: mockData.username, role: mockData.role })
+      return { success: true }
+    }
+    // ------------------------------
+
     try {
       // Menggunakan JSON (objek biasa) bukan FormData agar sesuai dengan Pydantic di Backend
       const { data } = await api.post('/auth/login', { username, password })
