@@ -1,43 +1,56 @@
 import os
 import shutil
 from pydantic_settings import BaseSettings
+from typing import Optional
 
-def get_db_path():
-    # 1. Tentukan lokasi asli database (Pastikan path-nya benar di Vercel)
-    # Di Vercel, root proyek biasanya ada di /var/task
-    base_dir = os.getcwd()
-    original_db = os.path.join(base_dir, "backend", "alumni_dev.db")
+def get_db_url():
+    # Lokasi database di dalam repo
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    db_name = "alumni_dev.db"
     
-    # 2. Lokasi tujuan di /tmp
-    temp_db = "/tmp/alumni_dev.db"
+    # Coba cari di beberapa tempat
+    possible_locations = [
+        os.path.join(base_dir, db_name),
+        os.path.join(os.getcwd(), "backend", db_name),
+        os.path.join(os.getcwd(), db_name)
+    ]
     
-    if os.environ.get("VERCEL"):
-        try:
-            # Salin database ke /tmp agar bisa diakses
-            if os.path.exists(original_db):
-                shutil.copy2(original_db, temp_db)
-                # Gunakan 3-slash untuk sqlite absolute path di Linux
-                return f"sqlite:///{temp_db}"
-            else:
-                # Jika tidak ketemu di backend/, coba di root
-                root_db = os.path.join(base_dir, "alumni_dev.db")
-                if os.path.exists(root_db):
-                    shutil.copy2(root_db, temp_db)
-                    return f"sqlite:///{temp_db}"
-        except Exception as e:
-            print(f"Database Copy Error: {e}")
+    source_db = None
+    for loc in possible_locations:
+        if os.path.exists(loc):
+            source_db = loc
+            break
             
-    # Fallback untuk lokal atau jika gagal
-    return f"sqlite:///{original_db}"
+    # Jika di Vercel, kita salin ke /tmp agar aman
+    if os.environ.get("VERCEL") and source_db:
+        target_db = f"/tmp/{db_name}"
+        try:
+            if not os.path.exists(target_db):
+                shutil.copy2(source_db, target_db)
+            # PENTING: Gunakan 4 garis miring untuk path absolut di SQLite
+            return f"sqlite:////{target_db}"
+        except Exception as e:
+            print(f"Gagal menyalin ke /tmp: {e}")
+            
+    if source_db:
+        # Gunakan 4 garis miring untuk path absolut
+        abs_path = os.path.abspath(source_db).replace("\\", "/")
+        return f"sqlite:////{abs_path}"
+    
+    # Fallback terakhir (jika benar-benar tidak ketemu)
+    return "sqlite:///./alumni_dev.db"
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = get_db_path()
+    # Gunakan default URL yang sudah kita proses
+    DATABASE_URL: str = get_db_url()
     SECRET_KEY: str = "change-this-to-a-very-long-random-secret-key-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_HOURS: int = 8
 
     class Config:
+        # Jangan paksa cari .env jika tidak ada
         env_file = ".env"
-        case_sensitive = True
+        env_file_encoding = 'utf-8'
+        extra = "ignore" # Biarkan jika ada variabel tambahan
 
 settings = Settings()
