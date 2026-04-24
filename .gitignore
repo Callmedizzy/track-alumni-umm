@@ -39,3 +39,5 @@ Thumbs.db
 data/alumni.json
 *.xlsx
 !backend/alumni_dev.db
+.vercel
+.env*.local
