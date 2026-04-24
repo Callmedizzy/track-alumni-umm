@@ -372,7 +372,7 @@ export default function AlumniPage() {
                       <td className="table-cell text-center">
                         <button
                           id={`edit-btn-${alumni.nim}`}
-                          onClick={() => setEditTarget({ nim: alumni.nim, nama: alumni.nama })}
+                          onClick={() => setEditTarget(alumni)}
                           className="btn-secondary py-1 px-2.5 text-xs"
                         >
                           <Edit2 className="w-3 h-3" />
@@ -435,10 +435,16 @@ export default function AlumniPage() {
       {/* Edit Modal */}
       {editTarget && (
         <EditAlumniModal
-          nim={editTarget.nim}
-          nama={editTarget.nama}
+          target={editTarget}
           onClose={() => setEditTarget(null)}
-          onSaved={() => { fetchAlumni(); setEditTarget(null) }}
+          onSaved={(updatedAlumni) => { 
+            // Update data statis secara lokal di browser
+            if (allData) {
+              const newData = allData.map(a => a.nim === updatedAlumni.nim ? updatedAlumni : a)
+              setAllData(newData)
+            }
+            setEditTarget(null) 
+          }}
         />
       )}
     </div>

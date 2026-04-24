@@ -14,76 +14,50 @@ const STATUS_KERJA = ['PNS', 'Swasta', 'Wirausaha']
 const DEFAULT_CONTACT = { linkedin: '', instagram: '', facebook: '', tiktok: '', email: '', no_hp: '' }
 const DEFAULT_CAREER = { tempat_kerja: '', alamat_kerja: '', posisi: '', status_kerja: '', sosmed_instansi: '' }
 
-export default function EditAlumniModal({ nim, nama, onClose, onSaved }) {
+export default function EditAlumniModal({ target, onClose, onSaved }) {
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState('contact')
   const [contact, setContact] = useState(DEFAULT_CONTACT)
   const [career, setCareer] = useState(DEFAULT_CAREER)
-  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  // Fetch current data
+  // Populate from local target object instead of API
   useEffect(() => {
-    const load = async () => {
-      setLoading(true)
-      try {
-        const { data } = await api.get(`/alumni/${nim}`)
-        if (data.contact) {
-          setContact({
-            linkedin: data.contact.linkedin || '',
-            instagram: data.contact.instagram || '',
-            facebook: data.contact.facebook || '',
-            tiktok: data.contact.tiktok || '',
-            email: data.contact.email || '',
-            no_hp: data.contact.no_hp || '',
-          })
-        }
-        if (data.career) {
-          setCareer({
-            tempat_kerja: data.career.tempat_kerja || '',
-            alamat_kerja: data.career.alamat_kerja || '',
-            posisi: data.career.posisi || '',
-            status_kerja: data.career.status_kerja || '',
-            sosmed_instansi: data.career.sosmed_instansi || '',
-          })
-        }
-      } catch {
-        toast({ message: 'Gagal memuat data alumni', type: 'error' })
-      } finally {
-        setLoading(false)
-      }
+    if (target) {
+      setContact({
+        linkedin: target.linkedin || '',
+        instagram: target.instagram || '',
+        facebook: target.facebook || '',
+        tiktok: target.tiktok || '',
+        email: target.email || '',
+        no_hp: target.no_hp || '',
+      })
+      setCareer({
+        tempat_kerja: target.tempat_kerja || '',
+        alamat_kerja: target.alamat_kerja || '',
+        posisi: target.posisi || '',
+        status_kerja: target.status_kerja || '',
+        sosmed_instansi: target.sosmed_instansi || '',
+      })
     }
-    load()
-  }, [nim])
+  }, [target])
 
   const saveContact = async () => {
     setSaving(true)
-    try {
-      const payload = {}
-      Object.entries(contact).forEach(([k, v]) => { if (v) payload[k] = v })
-      await api.put(`/alumni/${nim}/contact`, payload)
-      toast({ message: 'Data kontak berhasil disimpan!', type: 'success' })
-      onSaved()
-    } catch (err) {
-      toast({ message: err.response?.data?.detail || 'Gagal menyimpan kontak', type: 'error' })
-    } finally {
+    setTimeout(() => {
+      toast({ message: 'Mode Offline: Data kontak disimulasikan tersimpan!', type: 'success' })
       setSaving(false)
-    }
+      onSaved({ ...target, ...contact })
+    }, 600)
   }
 
   const saveCareer = async () => {
     setSaving(true)
-    try {
-      const payload = {}
-      Object.entries(career).forEach(([k, v]) => { if (v) payload[k] = v })
-      await api.put(`/alumni/${nim}/career`, payload)
-      toast({ message: 'Data karier berhasil disimpan!', type: 'success' })
-      onSaved()
-    } catch (err) {
-      toast({ message: err.response?.data?.detail || 'Gagal menyimpan karier', type: 'error' })
-    } finally {
+    setTimeout(() => {
+      toast({ message: 'Mode Offline: Data karier disimulasikan tersimpan!', type: 'success' })
       setSaving(false)
-    }
+      onSaved({ ...target, ...career })
+    }, 600)
   }
 
   return (
