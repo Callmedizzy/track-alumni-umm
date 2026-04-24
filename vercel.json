@@ -5,10 +5,7 @@
       "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "includeFiles": [
-          "backend/app/**",
-          "backend/alumni_dev.db"
-        ]
+        "runtime": "python3.11"
       }
     },
     {
