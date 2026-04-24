@@ -3,7 +3,13 @@
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "backend/app/**",
+          "backend/alumni_dev.db"
+        ]
+      }
     },
     {
       "src": "frontend/package.json",
