@@ -108,4 +108,7 @@ def log_action(
         ip_address=ip_address,
     )
     db.add(entry)
-    db.commit()
+    # Jangan commit log ke database jika di Vercel (read-only filesystem)
+    import os
+    if not os.environ.get("VERCEL"):
+        db.commit()
