@@ -1,22 +1,30 @@
 import sys
 import os
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
 # 1. Setup Path
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
 if path not in sys.path:
     sys.path.insert(0, path)
 
-# 2. Import app asli
+# 2. DEFINISI TOP-LEVEL (Wajib ada di sini agar Vercel tidak bingung)
+app = FastAPI()
+
 try:
-    from app.main import app
+    # 3. Muat aplikasi asli
+    from app.main import app as real_app
+    # Gunakan mount agar rute dari real_app masuk ke app utama
+    app.mount("/", real_app)
 except Exception as e:
-    from fastapi.responses import JSONResponse
     import traceback
-    
-    # Emergency app jika masih gagal import
-    fallback_app = FastAPI()
-    @fallback_app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-    async def catch_err(path: str):
-        return JSONResponse(status_code=500, content={"error": str(e), "trace": traceback.format_exc()})
-    app = fallback_app
+    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+    async def catch_error(path: str):
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "BOOTSTRAP_ERROR",
+                "message": str(e),
+                "traceback": traceback.format_exc()
+            }
+        )
