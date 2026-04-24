@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -15,14 +16,17 @@ from app.models import User, AuditLog, UserRole
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
-
+    try:
+        return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
+    except Exception as e:
+        # Jika bcrypt crash di Vercel, kita gunakan fallback sederhana atau lapor
+        print(f"BCRYPT_ERROR: {str(e)}")
+        # Untuk sementara, jika bcrypt gagal total di serverless, kita lapor lewat error ini
+        raise HTTPException(status_code=500, detail=f"Keamanan Server Error (Bcrypt): {str(e)}")
 
 def get_password_hash(password: str) -> str:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
 
 # ─── JWT ─────────────────────────────────────────────────────────────────────
 
@@ -35,7 +39,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-
 def decode_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
@@ -46,7 +49,6 @@ def decode_token(token: str) -> dict:
             detail="Token tidak valid atau sudah kadaluarsa.",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
 
 # ─── Current user dependency ─────────────────────────────────────────────────
 
@@ -62,7 +64,6 @@ def get_current_user(
     if not user:
         raise HTTPException(status_code=401, detail="User tidak ditemukan.")
     return user
-
 
 def get_current_user_optional(
     request: Request,
@@ -82,12 +83,10 @@ def get_current_user_optional(
     except:
         return None
 
-
 def require_admin(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role != UserRole.admin:
         raise HTTPException(status_code=403, detail="Akses ditolak. Hanya admin.")
     return current_user
-
 
 # ─── Audit logging helper ────────────────────────────────────────────────────
 
@@ -99,6 +98,10 @@ def log_action(
     detail: Optional[str] = None,
     ip_address: Optional[str] = None,
 ):
+    # JANGAN LAKUKAN APA-APA JIKA DI VERCEL
+    if os.environ.get("VERCEL"):
+        return
+
     entry = AuditLog(
         user_id=user.id if user else None,
         username=user.username if user else None,
@@ -108,7 +111,4 @@ def log_action(
         ip_address=ip_address,
     )
     db.add(entry)
-    # Jangan commit log ke database jika di Vercel (read-only filesystem)
-    import os
-    if not os.environ.get("VERCEL"):
-        db.commit()
+    db.commit()
