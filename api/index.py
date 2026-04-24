@@ -7,9 +7,12 @@ path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
 if path not in sys.path:
     sys.path.insert(0, path)
 
-# Import aplikasi secara eksplisit
-from app.main import app as _app
-
-# Pastikan variabel 'app' terbaca jelas oleh Vercel
-app = _app
+try:
+    from app.main import app as _app
+    app = _app
+except Exception as e:
+    import traceback
+    print("CRITICAL: Failed to load application")
+    traceback.print_exc()
+    raise e
 

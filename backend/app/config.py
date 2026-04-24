@@ -2,8 +2,12 @@ import os
 from pydantic_settings import BaseSettings
 from typing import Optional
 
-# Otomatis mencari lokasi database di folder backend
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Mencari lokasi database dengan lebih kuat (mendukung Vercel)
+if os.environ.get("VERCEL"):
+    BASE_DIR = os.path.join(os.getcwd(), "backend")
+else:
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 DEFAULT_DB_URL = f"sqlite:///{os.path.join(BASE_DIR, 'alumni_dev.db')}"
 
 class Settings(BaseSettings):
