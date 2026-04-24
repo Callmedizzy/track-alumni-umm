@@ -109,7 +109,15 @@ export default function AlumniPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-100">Data Alumni</h1>
           <p className="text-slate-400 text-sm mt-0.5">
-            {total.toLocaleString('id-ID')} alumni ditemukan
+            {total >= 100000 ? total.toLocaleString('id-ID') : total} alumni ditemukan
+            {total < 10 && isAdmin && (
+               <button 
+                 onClick={fetchAlumni}
+                 className="ml-3 text-primary-400 hover:underline text-xs font-bold uppercase tracking-widest"
+               >
+                 (Muat Data Pusat 100rb+)
+               </button>
+            )}
           </p>
         </div>
       </div>
