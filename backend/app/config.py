@@ -4,35 +4,29 @@ from pydantic_settings import BaseSettings
 def get_db_url():
     db_name = "alumni_dev.db"
     
-    # Daftar semua kemungkinan lokasi file di server Vercel
-    possible_paths = [
-        f"/var/task/backend/{db_name}",
-        f"/var/task/{db_name}",
-        os.path.join(os.getcwd(), "backend", db_name),
+    # CARA PALING SIMPEL: Cari di folder utama atau folder backend
+    # Kita coba beberapa lokasi yang paling umum di Vercel
+    locations = [
         os.path.join(os.getcwd(), db_name),
-        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", db_name)),
-        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", db_name))
+        os.path.join(os.getcwd(), "backend", db_name),
+        "/var/task/alumni_dev.db",
+        "/var/task/backend/alumni_dev.db"
     ]
     
-    found_path = None
-    for p in possible_paths:
-        if os.path.exists(p):
-            found_path = p
-            break
+    for loc in locations:
+        if os.path.exists(loc):
+            # LANGSUNG BUKA! Jangan pakai copy-copy lagi agar tidak berat.
+            # Mode 'ro' (Read-Only) sangat ringan.
+            path = os.path.abspath(loc).replace("\\", "/")
+            if not path.startswith("/"): path = "/" + path
+            return f"sqlite:////{path}?mode=ro"
             
-    if found_path:
-        # Gunakan mode Read-Only yang sangat stabil
-        abs_p = found_path.replace("\\", "/")
-        if not abs_p.startswith("/"): abs_p = "/" + abs_p
-        return f"sqlite:////{abs_p}?check_same_thread=False&mode=ro"
-    
-    # Jika benar-benar tidak ketemu, lapor ke log
-    print("DEBUG: DATABASE FILE NOT FOUND IN ANY SEARCH PATH!")
+    # Jika masih tidak ketemu (kritis), gunakan default
     return "sqlite:///./alumni_dev.db"
 
 class Settings(BaseSettings):
     DATABASE_URL: str = get_db_url()
-    SECRET_KEY: str = "umm-alumni-tracker-2025"
+    SECRET_KEY: str = "umm-2025"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24
 

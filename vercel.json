@@ -5,10 +5,7 @@
       "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "includeFiles": [
-          "backend/**",
-          "alumni_dev.db"
-        ]
+        "includeFiles": ["**/*.db", "backend/**"]
       }
     },
     {
