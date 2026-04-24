@@ -1,23 +1,25 @@
 import os
+import shutil
 from pydantic_settings import BaseSettings
 from typing import Optional
 
-# Mencari lokasi database dengan sangat kuat (Universal Vercel Path)
 def get_db_path():
-    # Coba beberapa lokasi yang mungkin di Vercel
-    possible_paths = [
-        os.path.join(os.getcwd(), "backend", "alumni_dev.db"),
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "alumni_dev.db"),
-        os.path.join("/var/task", "backend", "alumni_dev.db"),
-        "alumni_dev.db" # Fallback terakhir
-    ]
+    # Lokasi asli database di dalam folder backend
+    original_db = os.path.join(os.getcwd(), "backend", "alumni_dev.db")
     
-    for p in possible_paths:
-        if os.path.exists(p):
-            return f"sqlite:///{p}"
+    # Jika kita di Vercel, kita salin ke /tmp agar bisa dibaca/tulis tanpa kendala
+    if os.environ.get("VERCEL"):
+        temp_db = "/tmp/alumni_dev.db"
+        try:
+            if os.path.exists(original_db):
+                # Salin file jika belum ada di /tmp
+                if not os.path.exists(temp_db):
+                    shutil.copy2(original_db, temp_db)
+                return f"sqlite:///{temp_db}"
+        except Exception as e:
+            print(f"Gagal menyalin database: {e}")
             
-    # Jika tidak ketemu, gunakan default (akan error tapi setidaknya kita tahu)
-    return f"sqlite:///{os.path.join(os.getcwd(), 'backend', 'alumni_dev.db')}"
+    return f"sqlite:///{original_db}"
 
 DEFAULT_DB_URL = get_db_path()
 
@@ -30,6 +32,5 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
-
 
 settings = Settings()
