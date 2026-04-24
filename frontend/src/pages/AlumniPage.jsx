@@ -50,42 +50,59 @@ export default function AlumniPage() {
     { id: 'fakultas', label: 'Fakultas' },
   ]
 
+  const [allData, setAllData] = useState(null)
+
   const fetchAlumni = useCallback(async () => {
     setLoading(true)
     try {
-      const params = { page, limit: 50 }
-      if (appliedFilters.search) params.search = appliedFilters.search
-      if (appliedFilters.category) params.category = appliedFilters.category
-      if (appliedFilters.fakultas) params.fakultas = appliedFilters.fakultas
-      if (appliedFilters.prodi) params.prodi = appliedFilters.prodi
-      if (appliedFilters.tahun) params.tahun = appliedFilters.tahun
-      if (appliedFilters.has_contact !== '') params.has_contact = appliedFilters.has_contact === 'true'
-      if (appliedFilters.has_career !== '') params.has_career = appliedFilters.has_career === 'true'
+      // 1. Muat 142.000+ data secara statis (Hanya butuh 1x muat)
+      let dataList = allData;
+      if (!dataList) {
+        const res = await fetch('/alumni_data.json')
+        if (!res.ok) throw new Error('Data statis tidak ditemukan')
+        dataList = await res.json()
+        setAllData(dataList)
+      }
 
-      const { data: res } = await api.get('/alumni', { params })
-      setData(res.data)
-      setTotal(res.total)
-      setTotalPages(res.total_pages)
+      // 2. Filter data secara lokal (Sangat Cepat)
+      let filtered = dataList;
+
+      if (appliedFilters.search) {
+        const q = appliedFilters.search.toLowerCase()
+        filtered = filtered.filter(item => 
+          (item.nama && item.nama.toLowerCase().includes(q)) ||
+          (item.nim && item.nim.toLowerCase().includes(q))
+        )
+      }
+      if (appliedFilters.fakultas) {
+        filtered = filtered.filter(item => item.fakultas === appliedFilters.fakultas)
+      }
+      if (appliedFilters.prodi) {
+        filtered = filtered.filter(item => item.prodi && item.prodi.toLowerCase().includes(appliedFilters.prodi.toLowerCase()))
+      }
+      if (appliedFilters.tahun) {
+        filtered = filtered.filter(item => 
+          item.tahun_masuk == appliedFilters.tahun || 
+          (item.tgl_lulus && item.tgl_lulus.startsWith(appliedFilters.tahun))
+        )
+      }
+
+      // 3. Pagination Lokal (Bagi per 50 orang per halaman)
+      const limit = 50
+      const totalItems = filtered.length
+      const start = (page - 1) * limit
+      const end = start + limit
+
+      setData(filtered.slice(start, end))
+      setTotal(totalItems)
+      setTotalPages(Math.ceil(totalItems / limit))
+
     } catch (err) {
-      // --- FALLBACK MOCK DATA JIKA BACKEND ERROR ---
-      const errorDetail = err.response?.data?.detail || err.message || 'Unknown Error'
-      const mockData = [
-        { nim: '202010370311001', nama: 'Adam Alfaris', tahun_masuk: 2020, tgl_lulus: '2024-05-20', fakultas: 'Fakultas Teknik', prodi: 'Informatika', posisi: 'Software Engineer', tempat_kerja: 'Google', alamat_kerja: 'Jakarta', status_kerja: 'Bekerja' },
-        { nim: '202010370311002', nama: 'Siti Aminah', tahun_masuk: 2020, tgl_lulus: '2024-06-12', fakultas: 'Fakultas Ekonomi dan Bisnis', prodi: 'Akuntansi', posisi: 'Auditor', tempat_kerja: 'EY', alamat_kerja: 'Jakarta', status_kerja: 'Bekerja' },
-        { nim: '202010370311003', nama: 'Budi Santoso', tahun_masuk: 2019, tgl_lulus: '2023-11-05', fakultas: 'Fakultas Teknik', prodi: 'Teknik Sipil', posisi: 'Site Manager', tempat_kerja: 'WIKA', alamat_kerja: 'Surabaya', status_kerja: 'Bekerja' },
-        { nim: '202010370311004', nama: 'Dewi Lestari', tahun_masuk: 2021, tgl_lulus: '2025-01-20', fakultas: 'Fakultas Kedokteran', prodi: 'Pendidikan Dokter', posisi: 'Koas', tempat_kerja: 'RSU UMM', alamat_kerja: 'Malang', status_kerja: 'Magang' },
-      ]
-      setData(mockData)
-      setTotal(mockData.length)
-      setTotalPages(1)
-      toast({ 
-        message: `Mode Offline: ${errorDetail}`, 
-        type: 'warning' 
-      })
+      toast({ message: 'Gagal memuat 100k+ data statis', type: 'error' })
     } finally {
       setLoading(false)
     }
-  }, [page, appliedFilters])
+  }, [page, appliedFilters, allData])
 
   useEffect(() => { fetchAlumni() }, [fetchAlumni])
 
