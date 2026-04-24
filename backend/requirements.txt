@@ -1,12 +1,2 @@
 fastapi
 uvicorn
-sqlalchemy
-python-jose[cryptography]
-slowapi
-python-multipart
-python-dotenv
-pydantic
-pydantic-settings
-alembic
-pandas
-openpyxl
