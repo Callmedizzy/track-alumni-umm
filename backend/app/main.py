@@ -66,3 +66,17 @@ app.include_router(admin.router, prefix="/api")
 @app.get("/", tags=["Health"])
 def health_check():
     return {"status": "ok", "environment": "vercel" if os.environ.get("VERCEL") else "local"}
+
+@app.get("/api/debug/files")
+def list_files():
+    import os
+    files = []
+    for root, dirs, filenames in os.walk("."):
+        for f in filenames:
+            files.append(os.path.join(root, f))
+    return {
+        "cwd": os.getcwd(),
+        "files_count": len(files),
+        "backend_files": [f for f in files if "backend" in f][:100], # Ambil 100 pertama saja
+        "db_exists": os.path.exists("backend/alumni_dev.db") or os.path.exists("alumni_dev.db")
+    }
