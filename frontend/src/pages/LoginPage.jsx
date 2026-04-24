@@ -15,10 +15,10 @@ export default function LoginPage() {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
-  // Search state
   const [searchQuery, setSearchQuery] = useState('')
   const [searchCategory, setSearchCategory] = useState('Semua')
   const [showCategoryMenu, setShowCategoryMenu] = useState(false)
+  const [searchError, setSearchError] = useState('')
 
   const categories = ['Semua', 'Nama', 'NIM', 'Prodi', 'Fakultas']
 
@@ -38,10 +38,11 @@ export default function LoginPage() {
   }, [showCategoryMenu])
 
   const handleSearch = () => {
-    if (!searchQuery.trim() && searchCategory === 'Semua') {
-      navigate('/alumni')
+    if (!searchQuery.trim()) {
+      setSearchError('Silahkan mengisi kata kunci (Nama/NIM) terlebih dahulu!')
       return
     }
+    setSearchError('')
     const params = new URLSearchParams()
     if (searchQuery) params.set('search', searchQuery)
     if (searchCategory !== 'Semua') params.set('category', searchCategory.toLowerCase())
@@ -388,7 +389,27 @@ export default function LoginPage() {
             <Search size={isMobile ? 22 : 32} strokeWidth={2.5} />
           </button>
         </div>
-        {/* Pencarian Spesifik dihapus sesuai permintaan user */}
+        
+        {/* Pesan Error Pencarian Kosong */}
+        {searchError && (
+          <div style={{
+            marginTop: '16px',
+            color: '#ef4444',
+            background: '#fee2e2',
+            padding: '10px 20px',
+            borderRadius: '12px',
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            animation: 'popIn 0.3s ease-out',
+            boxShadow: '0 4px 12px rgba(239, 68, 68, 0.15)'
+          }}>
+            <AlertCircle size={18} />
+            {searchError}
+          </div>
+        )}
       </div>
 
       {/* ===== MENU GRID ===== */}

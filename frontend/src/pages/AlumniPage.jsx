@@ -67,6 +67,15 @@ export default function AlumniPage() {
       // 2. Filter data secara lokal (Sangat Cepat)
       let filtered = dataList;
 
+      // PROTEKSI DATA: Jika bukan admin, wajib ada minimal 1 kata kunci pencarian.
+      if (!isAdmin && !appliedFilters.search && !appliedFilters.fakultas && !appliedFilters.prodi && !appliedFilters.tahun) {
+        setData([])
+        setTotal(0)
+        setTotalPages(1)
+        setLoading(false)
+        return
+      }
+
       if (appliedFilters.search) {
         const q = appliedFilters.search.toLowerCase()
         filtered = filtered.filter(item => 
@@ -346,8 +355,14 @@ export default function AlumniPage() {
                 <tr>
                   <td colSpan={isAdmin ? 11 : 10} className="py-16 text-center text-slate-500">
                     <Search className="w-8 h-8 mx-auto mb-3 opacity-40" />
-                    <p>Tidak ada alumni yang ditemukan</p>
-                    <p className="text-xs mt-1">Coba ubah filter atau kata kunci pencarian</p>
+                    <p className="text-lg font-bold text-slate-300">
+                      {!isAdmin && !appliedFilters.search ? "Pencarian Diperlukan" : "Tidak ada alumni yang ditemukan"}
+                    </p>
+                    <p className="text-sm mt-1 text-slate-400">
+                      {!isAdmin && !appliedFilters.search 
+                        ? "Silakan ketikkan Nama atau NIM alumni di kolom pencarian untuk melihat data." 
+                        : "Coba ubah filter atau kata kunci pencarian"}
+                    </p>
                   </td>
                 </tr>
               ) : (
