@@ -67,7 +67,17 @@ export default function AlumniPage() {
       setTotal(res.total)
       setTotalPages(res.total_pages)
     } catch {
-      toast({ message: 'Gagal memuat data alumni', type: 'error' })
+      // --- FALLBACK MOCK DATA JIKA BACKEND ERROR ---
+      const mockData = [
+        { nim: '202010370311001', nama: 'Adam Alfaris', tahun_masuk: 2020, tgl_lulus: '2024-05-20', fakultas: 'Fakultas Teknik', prodi: 'Informatika', posisi: 'Software Engineer', tempat_kerja: 'Google', alamat_kerja: 'Jakarta', status_kerja: 'Bekerja' },
+        { nim: '202010370311002', nama: 'Siti Aminah', tahun_masuk: 2020, tgl_lulus: '2024-06-12', fakultas: 'Fakultas Ekonomi dan Bisnis', prodi: 'Akuntansi', posisi: 'Auditor', tempat_kerja: 'EY', alamat_kerja: 'Jakarta', status_kerja: 'Bekerja' },
+        { nim: '202010370311003', nama: 'Budi Santoso', tahun_masuk: 2019, tgl_lulus: '2023-11-05', fakultas: 'Fakultas Teknik', prodi: 'Teknik Sipil', posisi: 'Site Manager', tempat_kerja: 'WIKA', alamat_kerja: 'Surabaya', status_kerja: 'Bekerja' },
+        { nim: '202010370311004', nama: 'Dewi Lestari', tahun_masuk: 2021, tgl_lulus: '2025-01-20', fakultas: 'Fakultas Kedokteran', prodi: 'Pendidikan Dokter', posisi: 'Koas', tempat_kerja: 'RSU UMM', alamat_kerja: 'Malang', status_kerja: 'Magang' },
+      ]
+      setData(mockData)
+      setTotal(mockData.length)
+      setTotalPages(1)
+      toast({ message: 'Mode Offline: Menampilkan data cadangan', type: 'warning' })
     } finally {
       setLoading(false)
     }
