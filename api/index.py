@@ -1,3 +1,4 @@
+# Vercel Deployment Trigger - Python 3.12
 import sys
 import os
 
