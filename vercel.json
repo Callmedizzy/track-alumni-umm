@@ -1,5 +1,17 @@
 {
-  "rewrites": [
-    { "source": "/((?!assets/|api/|logo-umm.png).*)", "destination": "/index.html" }
+  "experimentalServices": {
+    "frontend": {
+      "entrypoint": "frontend",
+      "outputDirectory": "frontend/dist"
+    },
+    "backend": {
+      "entrypoint": "backend"
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/dist/index.html"
+    }
   ]
 }
