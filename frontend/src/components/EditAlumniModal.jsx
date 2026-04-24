@@ -78,8 +78,8 @@ export default function EditAlumniModal({ target, onClose, onSaved }) {
               </div>
               <span className="text-xs font-semibold text-primary-400 uppercase tracking-wider">Edit Alumni</span>
             </div>
-            <h2 className="text-lg font-bold text-slate-100 leading-tight">{nama}</h2>
-            <p className="text-sm text-slate-500 font-mono mt-0.5">NIM: {nim}</p>
+            <h2 className="text-lg font-bold text-slate-100 leading-tight">{target?.nama}</h2>
+            <p className="text-sm text-slate-500 font-mono mt-0.5">NIM: {target?.nim}</p>
           </div>
           <button
             id="modal-close-btn"
