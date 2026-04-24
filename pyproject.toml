@@ -13,7 +13,5 @@ dependencies = [
     "python-dotenv",
     "pydantic",
     "pydantic-settings",
-    "alembic",
-    "pandas",
-    "openpyxl"
+    "alembic"
 ]

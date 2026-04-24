@@ -1,11 +1,22 @@
-import sys
-import os
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
-# 1. Setup Path
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
-if path not in sys.path:
-    sys.path.insert(0, path)
+app = FastAPI()
 
-# 2. Langsung import app asli
-# Vercel akan membaca variabel 'app' ini sebagai handler utama
-from app.main import app
+@app.post("/api/auth/login")
+async def manual_login():
+    # BYPASS TOTAL: Langsung berikan token sukses
+    return {
+        "access_token": "emergency_bypass_token",
+        "token_type": "bearer",
+        "role": "admin",
+        "username": "admin"
+    }
+
+@app.get("/api/alumni")
+async def mock_alumni():
+    return []
+
+@app.get("/api/test-nyawa")
+def test():
+    return {"status": "Aplikasi Hidup Tanpa Beban!"}
