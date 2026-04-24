@@ -9,10 +9,12 @@ if path not in sys.path:
 
 try:
     from app.main import app as _app
-    app = _app
 except Exception as e:
     import traceback
     print("CRITICAL: Failed to load application")
     traceback.print_exc()
     raise e
+
+# Robot Vercel HARUS melihat ini di tingkat paling luar file
+app = _app
 
