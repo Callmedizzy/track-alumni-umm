@@ -17,6 +17,14 @@
     {
       "source": "/api/(.*)",
       "destination": "api/index.py"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ]
 }
