@@ -58,7 +58,7 @@ export default function AlumniPage() {
       // 1. Muat 142.000+ data secara statis (Hanya butuh 1x muat)
       let dataList = allData;
       if (!dataList) {
-        const res = await fetch('/alumni_data.json')
+        const res = await fetch('/data_100k.json')
         if (!res.ok) throw new Error('Data statis tidak ditemukan')
         dataList = await res.json()
         setAllData(dataList)
