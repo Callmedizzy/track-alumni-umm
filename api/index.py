@@ -1,37 +1,23 @@
 import sys
 import os
-import traceback
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
+# 1. Deklarasikan 'app' di baris paling luar agar Vercel PASTI menemukannya
+app = FastAPI()
+
+# 2. Tambahkan folder backend ke path
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
 if path not in sys.path:
     sys.path.insert(0, path)
 
+# 3. Import aplikasi asli
 try:
-    # Import aplikasi asli
-    from app.main import app
-    
-    # KUNCI UTAMA: Tangkap SEMUA error saat aplikasi berjalan
-    @app.exception_handler(Exception)
-    async def global_exception_handler(request: Request, exc: Exception):
-        return JSONResponse(
-            status_code=500,
-            content={
-                "detail": f"RUNTIME_ERROR: {str(exc)}",
-                "trace": traceback.format_exc(),
-                "cwd": os.getcwd()
-            }
-        )
+    from app.main import app as real_app
+    # Sambungkan aplikasi asli ke 'app' utama
+    app.mount("/", real_app)
 except Exception as e:
-    # Tangkap SEMUA error saat aplikasi baru menyala
-    app = FastAPI()
+    # Jika backend error, jangan buat Vercel build gagal, tampilkan saja errornya
     @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-    async def boot_error(path: str):
-        return JSONResponse(
-            status_code=500,
-            content={
-                "detail": f"BOOT_ERROR: {str(e)}",
-                "trace": traceback.format_exc()
-            }
-        )
+    async def catch_all(path: str):
+        return JSONResponse(status_code=500, content={"error": "Backend offline", "detail": str(e)})
