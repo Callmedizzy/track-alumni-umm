@@ -1,7 +1,8 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -15,18 +16,12 @@ from app.routers import auth, alumni, admin
 
 limiter = Limiter(key_func=get_remote_address)
 
-
-# ─── Lifespan ─────────────────────────────────────────────────────────────────
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create all tables on startup (use Alembic in production)
+    # Buat tabel database saat startup (Hanya jika TIDAK di Vercel)
     if not os.environ.get("VERCEL"):
         Base.metadata.create_all(bind=engine)
     yield
-
-
-# ─── App ──────────────────────────────────────────────────────────────────────
 
 app = FastAPI(
     title="Alumni Tracker API",
@@ -38,6 +33,19 @@ app = FastAPI(
 # Rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# DEBUG: Tangkap semua error dan kirim ke browser agar bisa kita lihat penyebabnya
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    return JSONResponse(
+        status_code=500,
+        content={
+            "message": "Internal Server Error - Debug Mode",
+            "detail": str(exc),
+            "traceback": traceback.format_exc()
+        }
+    )
 
 # CORS
 app.add_middleware(
@@ -57,4 +65,4 @@ app.include_router(admin.router, prefix="/api")
 
 @app.get("/", tags=["Health"])
 def health_check():
-    return {"status": "ok", "service": "Alumni Tracker API v1.0"}
+    return {"status": "ok", "environment": "vercel" if os.environ.get("VERCEL") else "local"}
