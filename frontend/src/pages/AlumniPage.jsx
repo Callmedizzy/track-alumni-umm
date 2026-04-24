@@ -66,8 +66,9 @@ export default function AlumniPage() {
       setData(res.data)
       setTotal(res.total)
       setTotalPages(res.total_pages)
-    } catch {
+    } catch (err) {
       // --- FALLBACK MOCK DATA JIKA BACKEND ERROR ---
+      const errorDetail = err.response?.data?.detail || err.message || 'Unknown Error'
       const mockData = [
         { nim: '202010370311001', nama: 'Adam Alfaris', tahun_masuk: 2020, tgl_lulus: '2024-05-20', fakultas: 'Fakultas Teknik', prodi: 'Informatika', posisi: 'Software Engineer', tempat_kerja: 'Google', alamat_kerja: 'Jakarta', status_kerja: 'Bekerja' },
         { nim: '202010370311002', nama: 'Siti Aminah', tahun_masuk: 2020, tgl_lulus: '2024-06-12', fakultas: 'Fakultas Ekonomi dan Bisnis', prodi: 'Akuntansi', posisi: 'Auditor', tempat_kerja: 'EY', alamat_kerja: 'Jakarta', status_kerja: 'Bekerja' },
@@ -77,7 +78,10 @@ export default function AlumniPage() {
       setData(mockData)
       setTotal(mockData.length)
       setTotalPages(1)
-      toast({ message: 'Mode Offline: Menampilkan data cadangan', type: 'warning' })
+      toast({ 
+        message: `Mode Offline: ${errorDetail}`, 
+        type: 'warning' 
+      })
     } finally {
       setLoading(false)
     }

@@ -6,8 +6,8 @@
       "use": "@vercel/python",
       "config": {
         "includeFiles": [
-          "backend/app/**",
-          "backend/alumni_dev.db"
+          "backend/**",
+          "alumni_dev.db"
         ]
       }
     },
