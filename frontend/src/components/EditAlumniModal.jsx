@@ -115,11 +115,7 @@ export default function EditAlumniModal({ target, onClose, onSaved }) {
 
         {/* Content */}
         <div className="p-6 max-h-[60vh] overflow-y-auto">
-          {loading ? (
-            <div className="flex items-center justify-center h-40">
-              <Loader2 className="w-6 h-6 text-primary-400 animate-spin" />
-            </div>
-          ) : activeTab === 'contact' ? (
+          {activeTab === 'contact' ? (
             <div className="space-y-4 animate-fade-in">
               {[
                 { key: 'linkedin', label: 'LinkedIn URL', placeholder: 'https://linkedin.com/in/...' },
@@ -240,7 +236,7 @@ export default function EditAlumniModal({ target, onClose, onSaved }) {
             id="modal-save-btn"
             onClick={activeTab === 'contact' ? saveContact : saveCareer}
             className="btn-primary flex-1 justify-center"
-            disabled={saving || loading}
+            disabled={saving}
           >
             {saving ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Menyimpan...</>
