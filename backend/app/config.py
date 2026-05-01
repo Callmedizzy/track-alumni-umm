@@ -25,10 +25,13 @@ def get_db_url():
     return "sqlite:///./alumni_dev.db"
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = get_db_url()
     SECRET_KEY: str = "umm-2025"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24
+
+    @property
+    def DATABASE_URL(self) -> str:
+        return get_db_url()
 
     class Config:
         env_file = ".env"
