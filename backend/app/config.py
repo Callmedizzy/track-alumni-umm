@@ -2,10 +2,10 @@ import os
 from pydantic_settings import BaseSettings
 
 def get_db_url():
+    import shutil
     db_name = "alumni_dev.db"
     
-    # CARA PALING SIMPEL: Cari di folder utama atau folder backend
-    # Kita coba beberapa lokasi yang paling umum di Vercel
+    # Lokasi file DB asli (bundled by Vercel)
     locations = [
         os.path.join(os.getcwd(), db_name),
         os.path.join(os.getcwd(), "backend", db_name),
@@ -13,15 +13,28 @@ def get_db_url():
         "/var/task/backend/alumni_dev.db"
     ]
     
+    original_db = None
     for loc in locations:
         if os.path.exists(loc):
-            # LANGSUNG BUKA! Jangan pakai copy-copy lagi agar tidak berat.
-            # Mode 'ro' (Read-Only) sangat ringan.
-            path = os.path.abspath(loc).replace("\\", "/")
-            if not path.startswith("/"): path = "/" + path
-            return f"sqlite:////{path}?mode=ro"
+            original_db = loc
+            break
             
-    # Jika masih tidak ketemu (kritis), gunakan default
+    if os.environ.get("VERCEL") and original_db:
+        # Vercel file system is read-only except for /tmp
+        tmp_db = "/tmp/alumni_dev.db"
+        if not os.path.exists(tmp_db):
+            try:
+                shutil.copy2(original_db, tmp_db)
+            except Exception:
+                pass
+        return f"sqlite:///{tmp_db}"
+        
+    if original_db:
+        path = os.path.abspath(original_db).replace("\\", "/")
+        if not path.startswith("/"): path = "/" + path
+        return f"sqlite:////{path}"
+        
+    # Default fallback
     return "sqlite:///./alumni_dev.db"
 
 class Settings(BaseSettings):
