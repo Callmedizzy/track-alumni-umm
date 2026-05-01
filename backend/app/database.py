@@ -9,7 +9,7 @@ _is_sqlite = settings.DATABASE_URL.startswith("sqlite")
 if _is_sqlite:
     engine = create_engine(
         settings.DATABASE_URL,
-        connect_args={"check_same_thread": False},
+        connect_args={"check_same_thread": False, "uri": True},
     )
 else:
     engine = create_engine(
